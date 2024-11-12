@@ -1,0 +1,36 @@
+
+.print-only, .watermark{
+  display: none;
+}
+
+@media print {
+    .print-only{
+      display: block;
+    }
+    .print-hide{
+      display: none !important;
+    }
+    .print-bg {
+      background: #fff!important;
+      color: #000!important;
+    }
+    header, footer, aside, form, input, select, button, a::after, a::before {
+      display: none!important;
+    }
+    
+    body{
+      background-color: #ddd!important;
+      -webkit-print-color-adjust:exact !important;
+      print-color-adjust:exact !important;
+    }
+}
+
+@page {
+  margin: 2cm;
+  /*background-image: url("./../images/system/logo.png"); */
+  background-color: #f0f!important;
+  
+  @top-right {
+    content: "Page ";
+  }
+}

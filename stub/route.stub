@@ -1,0 +1,13 @@
+<?php
+use {{! controller class full !}};
+
+Route::prefix('{{! route prefix !}}')->name('{{! route prefix !}}.')->group(function(){
+  Route::get('/', [{{! controller class !}}::class, 'index'])->name('index');
+  Route::post('/store', [{{! controller class !}}::class, 'store'])->name('store');
+  Route::post('/{id}/update', [{{! controller class !}}::class, 'update'])->name('update');
+  Route::delete('/{id}/delete', [{{! controller class !}}::class, 'destroy'])->name('delete');
+});
+
+
+
+?>

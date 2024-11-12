@@ -1,0 +1,75 @@
+<?php
+
+namespace {{! namespace controller !}};
+
+use Exception;
+use {{! namespace model !}};
+use Illuminate\Http\Request;
+use App\Helper\Traits\Filter;
+use App\Http\Controllers\Controller;
+use {{! namespace request create full !}};
+use {{! namespace request update full !}};
+use {{! namespace resource full !}};
+
+class {{! controller class !}} extends Controller
+{
+    use Filter;
+    public function index(){
+      ${{! pages !}} = {{! Page !}}Resource::collection($this->getFilterData({{! Model !}}::class, [
+        'like' => {{! array_fields !}}
+      ])->withQueryString());
+      $params = $this->getParams();
+      return inertia('{{! Inertia Page !}}', compact('{{! pages !}}', 'params'));
+    }
+    
+    public function store(StoreRequest $req){
+      try{
+        {{! Model !}}::create($req->validated());
+        $toast = [
+          'message' => '{{! Page !}} has <kbd>created</kbd> successful!', 
+          'type' => 'success'
+        ];
+      } catch (Exception $e) {
+        $toast = [
+          'message' => $e->getMessage(), 
+          'type' => 'error'
+        ];
+      }
+      return redirect()->route('{{! route_name !}}index')->with('toast', $toast);
+    }
+    
+    public function update($id, UpdateRequest $req){
+      try{
+        ${{! page !}} = {{! Model !}}::find($id);
+        ${{! page !}}->update($req->validated());
+        $toast = [
+          'message' => '{{! Page !}} <strong>'.${{! page !}}->name.'</strong> has <kbd>updated</kbd> successful!', 
+          'type' => 'success'
+        ];
+      } catch (Exception $e) {
+        $toast = [
+          'message' => exception_message($e), 
+          'type' => 'error'
+        ];
+      }
+      return redirect()->back()->with('toast', $toast);
+    }
+    
+    public function destroy($id){
+      //sleep(5);
+      try{
+        ${{! page !}} = {{! Model !}}::findOrFail($id);
+        ${{! page !}}->delete();
+        $toast = [
+          'message' => '{{! Page !}} <strong>'.${{! page !}}->name.'</strong> has <kbd>deleted</kbd> successfull!', 
+          'type' => 'success'
+        ];
+      }catch(\Exception $e){
+        $toast = [
+          'message' => exception_message($e), 
+          'type' => 'error'
+        ];
+      }
+      return redirect()->back()->with('toast', $toast);
+    }
+}

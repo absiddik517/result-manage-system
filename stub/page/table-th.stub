@@ -1,0 +1,1 @@
+<th v-show="columns.{{! table_field !}}"> {{! Table Field !}} </th>

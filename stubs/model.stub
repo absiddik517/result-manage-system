@@ -1,0 +1,16 @@
+<?php
+
+namespace {{ namespace }};
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use App\Helper\Traits\HasDefault;
+
+class {{ class }} extends Model
+{
+    use HasFactory, HasDefault;
+    
+    public $guarded = [];
+    protected $perPage = 5;
+    protected static $hasDefault = ['season_id', 'user_id', 'date'];
+}

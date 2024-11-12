@@ -1,0 +1,4 @@
+{{! table_field !}}: {
+          isActive: this.params.{{! table_field !}} != null,
+          value: this.params.{{! table_field !}} ?? null,
+        },
