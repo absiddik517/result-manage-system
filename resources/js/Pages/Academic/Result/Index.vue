@@ -303,6 +303,7 @@ export default {
         let query = {};
         if (state.search) query.search = state.search;
         if (state.per_page) query.per_page = state.per_page;
+        if (state.page) query.page = state.page;
         if (state.class_id) query.class_id = state.class_id;
         if (state.student_id) query.student_id = state.student_id;
         if (state.exam_id) query.exam_id = state.exam_id;
@@ -323,7 +324,7 @@ export default {
       this.loadingTable = true;
       Inertia.get(this.route("result.index"), filter, {
         preserveState: true,
-        preserveScroll: true,
+        preserveScroll: false,
         replace: true,
         onSuccess: () => {
           this.loadingTable = false;

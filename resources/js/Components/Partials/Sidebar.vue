@@ -35,47 +35,112 @@
                     </li>
                     
                     <li class="nav-header">Academy</li>
-                    <SidebarTree 
-                      prefix="classes"
-                    >
+                    <SidebarLink 
+                          name="institute.index"
+                          text="Institute"
+                          icon="far fa-circle"
+                        />
+                    <SidebarTree prefix="classes">
                       <template #title>
                         <i class="nav-icon fas fa-table"></i>
                         <p>
-                          Academy
+                          Class
                           <i class="fas fa-angle-left right"></i>
                         </p>
                       </template>
                       <template #links>
                         <SidebarLink 
-                          name="institute.index"
-                          text="Institute"
-                          icon="far fa-circle"
+                          name="classes.create"
+                          text="Add Class"
+                          icon="fa fa-plus"
                         />
                         <SidebarLink 
                           name="classes.index"
-                          text="Class"
+                          text="View"
                           icon="far fa-circle"
+                        />
+                        
+                      </template>
+                    </SidebarTree>
+                    <SidebarTree prefix="student">
+                      <template #title>
+                        <i class="nav-icon fas fa-table"></i>
+                        <p>
+                          Student
+                          <i class="fas fa-angle-left right"></i>
+                        </p>
+                      </template>
+                      <template #links>
+                        <SidebarLink 
+                          name="student.create"
+                          text="Add Student"
+                          icon="fa fa-plus"
                         />
                         <SidebarLink 
                           name="student.index"
-                          text="Student"
+                          text="View"
                           icon="far fa-circle"
                         />
+                        
+                      </template>
+                    </SidebarTree>
+                    <SidebarTree prefix="subject">
+                      <template #title>
+                        <i class="nav-icon fas fa-table"></i>
+                        <p>
+                          Subject
+                          <i class="fas fa-angle-left right"></i>
+                        </p>
+                      </template>
+                      <template #links>
+                        <!--
+                        <SidebarLink 
+                          name="subject.create"
+                          text="Add Subject"
+                          icon="fa fa-plus"
+                        />
+                        -->
                         <SidebarLink 
                           name="subject.index"
-                          text="Subject"
+                          text="View"
+                          icon="far fa-circle"
+                        />
+                        
+                      </template>
+                    </SidebarTree>
+                    
+                    <SidebarTree prefix="exam">
+                      <template #title>
+                        <i class="nav-icon fas fa-table"></i>
+                        <p>
+                          Exam
+                          <i class="fas fa-angle-left right"></i>
+                        </p>
+                      </template>
+                      <template #links>
+                        <!--
+                        <SidebarLink 
+                          name="subject.create"
+                          text="Add Subject"
+                          icon="fa fa-plus"
+                        />
+                        -->
+                        <SidebarLink 
+                          name="exam.index"
+                          text="View"
                           icon="far fa-circle"
                         />
                         <SidebarLink 
-                          name="exam.index"
-                          text="Exam"
-                          icon="far fa-circle"
+                          name="exam.map.create"
+                          text="Manage Exam Plan"
+                          icon="fa fa-edit"
                         />
                         <SidebarLink 
                           name="exam.map.index"
-                          text="Exam Subject Mapping"
+                          text="Exam Plan"
                           icon="far fa-circle"
                         />
+                        
                       </template>
                     </SidebarTree>
                     
@@ -92,26 +157,32 @@
                       </template>
                       <template #links>
                         <SidebarLink 
+                          name="result.create"
+                          text="Manage Result"
+                          icon="fa fa-edit"
+                        />
+                        <SidebarLink 
                           name="result.index"
                           text="Result"
-                          icon="far fa-circle"
-                        />
-                        <SidebarLink 
-                          name="sheet.index"
-                          text="Sheet By Class"
-                          icon="far fa-circle"
-                        />
-                        <SidebarLink 
-                          name="sheet.individual"
-                          text="Marksheet"
                           icon="far fa-circle"
                         />
                       </template>
                     </SidebarTree>
                     
+                    <li class="nav-header">Downloads</li>
+                    <SidebarLink 
+                      name="sheet.index"
+                      text="Resultsheet"
+                      icon="fa fa-download"
+                    />
+                    <SidebarLink 
+                      name="sheet.individual"
+                      text="Marksheet"
+                      icon="fa fa-download"
+                    />
                     <SidebarLink 
                       name="downloads"
-                      text="Downloads"
+                      text="Miscellaneous"
                       icon="fa fa-download"
                     />
                     

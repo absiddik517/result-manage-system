@@ -27,7 +27,7 @@
               :data-dt-idx="index"
               :tabindex="index"
               class="page-link"
-              preserve-scroll
+              :preserve-scroll="false"
               replace
               ><span v-html="page.label"></span
             ></inertia-link>

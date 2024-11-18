@@ -13,6 +13,7 @@
                     <option v-for="exam in exams" :value="exam.id"> {{ exam.name }} </option>
                   </select>
                 </td>
+                <td></td>
                 <td class="text-right" style="width: 40px;">
                   <a :href="route('pdf.result.form', {exam_id: filter.exam_id})" target="_blank"><Pdfd /></a>
                 </td>
@@ -25,9 +26,48 @@
                     <option v-for="exam in exams" :value="exam.id"> {{ exam.name }} </option>
                   </select>
                 </td>
+                <td></td>
                 <td class="text-right" style="width: 40px;">
                   <a :href="route('pdf.exam.form', {exam_id: filter.exam_id})" target="_blank"><Pdfd /></a>
                 </td>
+              </tr>
+              <tr>
+                <td>Admit</td>
+                <td>
+                  <select class="form-control" v-model="filter.exam_id">
+                    <option value="">Exam</option>
+                    <option v-for="exam in exams" :value="exam.id"> {{ exam.name }} </option>
+                  </select>
+                </td>
+                <td>
+                  <select class="form-control" v-model="filter.class_id">
+                    <option value="">Class</option>
+                    <option v-for="classs in classes" :value="classs.id"> {{ classs.name }} </option>
+                  </select>
+                </td>
+                <td class="text-right" style="width: 40px;">
+                  <a :href="route('pdf.admit', {exam_id: filter.exam_id, class_id: filter.class_id})" target="_blank"><Pdfd /></a>
+                </td>
+                
+              </tr>
+              <tr>
+                <td>Attendance Sheet</td>
+                <td>
+                  <select class="form-control" v-model="filter.exam_id">
+                    <option value="">Exam</option>
+                    <option v-for="exam in exams" :value="exam.id"> {{ exam.name }} </option>
+                  </select>
+                </td>
+                <td>
+                  <select class="form-control" v-model="filter.class_id">
+                    <option value="">Class</option>
+                    <option v-for="classs in classes" :value="classs.id"> {{ classs.name }} </option>
+                  </select>
+                </td>
+                <td class="text-right" style="width: 40px;">
+                  <a :href="route('pdf.attendance_sheet', {exam_id: filter.exam_id, class_id: filter.class_id})"><Pdfd /></a>
+                </td>
+                
               </tr>
             </tbody>
           </table>
@@ -64,12 +104,14 @@ export default {
   },
   props: {
     exams: Object,
+    classes: Object,
   },
   data() {
     return {
       loading: false,
       filter: reactive({
         exam_id: '',
+        class_id: '',
       }),
     }
   },

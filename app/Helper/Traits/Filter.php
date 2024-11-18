@@ -55,7 +55,7 @@ trait Filter{
   }
   
   public function getParams(){
-    if($this->fields) return request()->only(['orderBy', 'per_page', 'orderDirection', 'id', 'search', ...$this->fields]);
+    if($this->fields) return request()->only(['orderBy', 'per_page', 'orderDirection', 'id', 'search', 'page', ...$this->fields]);
     return request()->only(['orderBy', 'per_page', 'orderDirection', 'id', 'search']);
   }
   

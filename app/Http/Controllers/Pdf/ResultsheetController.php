@@ -26,6 +26,7 @@ class ResultsheetController extends Controller
         'pdf.margin_bottom' => '10',
         'pdf.margin_left' => '10',
         'pdf.margin_right' => '10',
+        'pdf.default_font_size' => '30',
       ]);
       $data = $this->process_results($req);
       //dd($data);

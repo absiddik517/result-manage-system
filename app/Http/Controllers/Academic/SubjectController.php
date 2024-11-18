@@ -18,7 +18,7 @@ class SubjectController extends Controller
     public function index(){
       $classes = Classes::select('id', 'name')->get();
       $subjects = SubjectResource::collection($this->getFilterData(Subject::class, [
-        'like' => ["class_id", "name", "short_name"], 'classs'
+        'like' => ["name", "short_name"], 'equal' => ['id'], 'classs'
       ])->withQueryString());
      // dd($subjects);
       $params = $this->getParams();

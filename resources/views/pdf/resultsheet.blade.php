@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: 'nikosh', Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #fff;
         }
 
         .result-sheet {
@@ -21,27 +21,18 @@
             display: flex;
             align-items: center;
             margin-bottom: 20px;
+            width: 100%;
         }
 
-        .header img {
-            width: 80px; /* Adjust logo size */
+        .logo {
+            width: 160px; /* Adjust logo size */
             height: auto;
             margin-right: 15px;
         }
 
         .school-info {
             text-align: center;
-        }
-
-        .school-info h2 {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .school-info p {
-            font-size: 16px;
-            margin: 2px 0;
+            float: right;
         }
 
         .marks-table {
@@ -98,7 +89,25 @@
 
     <div class="result-sheet">
         <!-- Header Section with Logo and School Information -->
-        <div class="header">
+        <table style="width: 100%">
+          <tr>
+            <td style="width: 160px;"><img class="logo" src="{{ base_path('storage/images/logo.png') }}" alt="Logo"></td>
+            <td style="text-align: center; vertical-align: top;">
+              <div class="header">
+                  <div class="school-info" >
+                    <div style="font-size: 36px;">{{ $institute['name'] }}</div>
+                    <p style="font-size: 18px;">{{ $institute['established_at'] }}</p>
+                    <p style="font-size: 18px;">{{ $institute['address'] }}</p>
+                    <p style="font-size:18px;">{{ $institute['exam_name'] }}</p>
+                    <p style="font-size: 18px;">{{ $institute['class_name'] }}</p>
+                  </div>
+              </div>
+            </td>
+            <td style="width: 160px;"></td>
+          </tr>
+        </table>
+        <!--
+              <div class="header">
             <div class="school-info">
               <h2>{{ $institute['name'] }}</h2>
               <p>{{ $institute['established_at'] }}</p>
@@ -107,6 +116,7 @@
               <p>{{ $institute['class_name'] }}</p>
             </div>
         </div>
+        -->
 
         @foreach($groups as $group_name => $group)
           @if($group_name != "NO_GROUP")

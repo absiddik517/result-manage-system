@@ -44,60 +44,25 @@
                 </option>
                 <option value="all">All</option>
               </select>
-              <Dropdown animate stay header="Filter" id="filtersubjectDropdown">
-                <template #btn>
-                  <i class="fa fa-filter"></i>
-                </template>
-
-                <div class="px-2 py-1">
-                  <Dropdown
-                    animate
-                    stay
-                    header="Toggle Collumn"
-                    id="filterColumnToggle"
-                  >
-                    <template #btn>
-                      <i class="fa fa-eye"></i> Collumn visibility
-                    </template>
-
-                    <label
-                      :for="field + 'dropdown'"
-                      class="dropdown-item"
-                      v-for="(value, field) in columns"
-                    >
-                      <input
-                        v-model="columns[field]"
-                        type="checkbox"
-                        :id="field + 'dropdown'"
-                      />
-                      {{ field.replace("_", " ").toUpperCase() }}
-                    </label>
-                  </Dropdown>
-                </div>
-              </Dropdown>
             </div>
           </div>
           <div class="table-responsive">
             <table class="table table-hover y-middle text-nowrap">
-              <div v-show="loadingTable" class="overlays">
-                <span>Loading... <i class="fa fa-spin fa-spinner"></i></span>
-              </div>
+              
               <thead class="bg-gray-1">
                 <tr>
-                  <th v-show="columns.id">ID</th>
-                  <th v-show="columns.class_name">Class</th>
-                  <th v-show="columns.name">Name</th>
-                  <th v-show="columns.short_name">Short Name</th>
-                  <th v-show="columns.action" style="width: 30px"></th>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Short Name</th>
+                  <th style="width: 30px"></th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="(subject, index) in subjects.data">
-                  <td v-show="columns.id">{{ subject.id }}</td>
-                  <td v-show="columns.class_name">{{ subject.class_name }}</td>
-                  <td v-show="columns.name">{{ subject.name }}</td>
-                  <td v-show="columns.short_name">{{ subject.short_name }}</td>
-                  <td v-show="columns.action" class="text-right">
+                  <td>{{ subject.id }}</td>
+                  <td>{{ subject.name }}</td>
+                  <td>{{ subject.short_name }}</td>
+                  <td class="text-right">
                     <Dropdown
                       stay
                       :header="subject.name"
@@ -206,13 +171,6 @@ export default {
       filter: reactive({
         search: this.params.search ?? null,
         per_page: this.params.per_page ?? 5,
-      }),
-      columns: reactive({
-        id: true,
-        class_name: true,
-        name: true,
-        short_name: true,
-        action: true,
       }),
 
       modal: { form: null, confirm: null },

@@ -99,11 +99,20 @@ class MarksheetController extends Controller
           'result' => $this->calculate_result($subjects, $student)
         ];
       }
+      $max_marks = Result::join('subjects', 'subjects.id', '=', 'results.subject_id')
+                  ->where('results.class_id', $req->class_id)
+                  ->where('results.exam_id', $req->exam_id)
+                  ->select('subjects.name')
+                  ->selectRaw('MAX(total_mark_obtain) as max')
+                  ->groupBy('subjects.name')
+                  ->get();
+      $max_marks = pluckByKey($max_marks, 'name', true);
       return [
         'theads' => $allCriteria,
         'institute' => $institute,
         'exam' => $exam,
-        'students' => $student_result
+        'students' => $student_result,
+        'max' => $max_marks
       ];
     }
     
@@ -142,8 +151,14 @@ class MarksheetController extends Controller
                   'subjects.short_name'
                 ])
                 ->get();
-      
-      
+      $max_marks = Result::join('subjects', 'subjects.id', '=', 'results.subject_id')
+                  ->where('results.class_id', $req->class_id)
+                  ->where('results.exam_id', $req->exam_id)
+                  ->select('subjects.name')
+                  ->selectRaw('MAX(total_mark_obtain) as max')
+                  ->groupBy('subjects.name')
+                  ->get();
+      $max_marks = pluckByKey($max_marks, 'name', true);
       // preparing result format before putting result
       $subjects = [];
       $allCriteria = [];
@@ -179,7 +194,8 @@ class MarksheetController extends Controller
         'student' => $student,
         'institute' => $institute,
         'exam' => $exam,
-        'result' => $this->calculate_result($subjects, $student)
+        'result' => $this->calculate_result($subjects, $student),
+        'max' => $max_marks
       ];
     }
     

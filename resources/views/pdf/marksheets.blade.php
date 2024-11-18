@@ -10,6 +10,10 @@
             background-color: #f4f4f4;
             background: #fff;
         }
+        h1, h2, h3, h4, h5, h6, p, span{
+          margin: 0;
+          padding: 0;
+        }
 
         .result-sheet {
             width: 100%;
@@ -114,12 +118,20 @@
 <body>
   @foreach($students as $student)
     <div class="result-sheet">
-        <div class="school-info">
-            <h2>{{ $institute['name'] }}</h2>
-            <p>{{ $institute['established_at'] }}</p>
-            <p>{{ $institute['address'] }}</p>
-            <p>{{ $exam['name'] }}</p>
-        </div>
+      <div class="header" style="text-align: center">
+          <div style="float: left; width: 120px;">
+              <img class="logo" src="{{ base_path('storage/images/logo.png') }}" alt="">
+          </div>
+
+          <div style="float: right; width: calc(100% - 240px);">
+            <h2>{{ $institute->name }}</h2>
+            <p>{{ $institute->established_at }}</p>
+            <p>{{ $institute->address }}</p>
+            <p>{{ $exam->name }}</p>
+          </div>
+
+          <div style="clear: both; margin-top: 5px; padding: 0pt;"></div>
+      </div>
         <hr>
 
         <table class="student-info">
@@ -139,9 +151,10 @@
                     <th colspan="2">বিষয়</th>
                     <th>পূর্ণমান</th>
                     @foreach($theads as $title)
-                    <th>{{ $title }}</th>
+                    <th style="width:auto;">{{ $title }}</th>
                     @endforeach
                     <th>মোট</th>
+                    <th>সর্বোচ্চ</th>
                     <th>গ্রেড</th>
                 </tr>
             </thead>
@@ -169,6 +182,9 @@
                     >
                       {{ bnum($subject['total_mark_obtain']) }}
                     </td>
+                    <td @if($max[$name]['max'] == $subject['total_mark_obtain']) style="color: green;" @endif>
+                      {{ bnum($max[$name]['max']) }}
+                    </td>
                     <td>{{ $subject['grade'] }}</td>
                 </tr>
                 @endforeach
@@ -177,6 +193,7 @@
                     <td>{{ bnum($student['result']['total_full_mark']) }}</td>
                     <td colspan="{{ count($theads) + 1 }}"
                     style="text-align:right">{{ bnum($student['result']['total_marks']) }}</td>
+                    <td></td>
                     <td></td>
                 </tr>
             </tbody>

@@ -22,24 +22,6 @@
                 <option v-for="index in 100" :value="index * 5">{{ index * 5 }}</option>
                 <option value="all">All</option>
               </select>
-              <Dropdown animate stay header="Filter" id="filterexamDropdown">
-                <template #btn>
-                  <i class="fa fa-filter"></i>
-                </template>
-                
-                <div class="px-2 py-1">
-                  <Dropdown animate stay header="Toggle Collumn" id="filterColumnToggle">
-                    <template #btn>
-                      <i class="fa fa-eye"></i>  Collumn visibility
-                    </template>
-                    
-                    <label :for="field + 'dropdown'" class="dropdown-item" v-for="(value, field) in columns">
-                      <input v-model="columns[field]" type="checkbox" :id="field + 'dropdown'"> 
-                      {{ field.replace('_', ' ').toUpperCase() }}
-                    </label>
-                  </Dropdown>
-                </div>
-              </Dropdown>
             </div>
           </div>
           <div class="table-responsive">
@@ -49,18 +31,14 @@
               </div>
               <thead class="bg-gray-1">
                 <tr>
-                  <th v-show="columns.id">ID</th>
-                  <th v-show="columns.name"> Name </th>
-<th v-show="columns.short_name"> Short Name </th>
-                  <th v-show="columns.action" style="width: 30px;"></th>
+                  <th> Name </th>
+                  <th style="width: 30px;"></th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="(exam, index) in exams.data">
-                  <td v-show="columns.id">{{ exam.id }}</td>
-                                      <td v-show="columns.name">{{ exam.name }}</td>
-                    <td v-show="columns.short_name">{{ exam.short_name }}</td>
-                  <td v-show="columns.action" class="text-right">
+                                      <td>{{ exam.name }}</td>
+                  <td class="text-right">
                     <Dropdown stay :header="exam.name" :id="'examindex' + index">
                       <Button
                         btnDropdown
@@ -132,12 +110,6 @@ export default {
       filter: reactive({
         search: this.params.search ?? null,
         per_page: this.params.per_page ?? 5,
-      }),
-      columns: reactive({
-        id: true,
-                name: true, 
-        short_name: true, 
-        action: true
       }),
 
       modal: {form: null, confirm: null},

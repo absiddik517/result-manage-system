@@ -22,6 +22,7 @@ use App\Http\Controllers\Academic\Result\ResultController;
 use App\Http\Controllers\Pdf\MarksheetController;
 use App\Http\Controllers\Pdf\ResultsheetController;
 use App\Http\Controllers\Pdf\DownloadController;
+use App\Http\Controllers\Pdf\AdmitcardController;
 
 
 use Inertia\Inertia;
@@ -65,10 +66,14 @@ Route::get('downloads/marksheets', [MarksheetController::class, 'print_all_marks
 Route::get('downloads/resultsheet', [ResultsheetController::class, 'index'])->name('resultsheet');
 Route::get('downloads/result-form', [DownloadController::class, 'result_entry_sheet'])->name('pdf.result.form');
 Route::get('downloads/exam/plan/{exam_id}', [DownloadController::class, 'new_exam_plan'])->name('pdf.exam.form');
+Route::get('downloads/admit', [AdmitcardController::class, 'index'])->name('pdf.admit');
+Route::get('downloads/attendance_sheet', [AdmitcardController::class, 'attendance_sheet'])->name('pdf.attendance_sheet');
+
 
 Route::get('downloads', function(){
   $exams = \DB::table('exams')->select('name', 'id')->get();
-  return inertia('Academic/Downloads', compact('exams'));
+  $classes = \DB::table('classes')->select('name', 'id')->get();
+  return inertia('Academic/Downloads', compact('exams', 'classes'));
 })->name('downloads');
 
 Route::prefix('sheet')->name('sheet.')->middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function(){
