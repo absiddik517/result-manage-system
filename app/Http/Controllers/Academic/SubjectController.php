@@ -15,13 +15,20 @@ use App\Http\Resources\Academic\SubjectResource;
 class SubjectController extends Controller
 {
     use Filter;
-    public function index(){
+    public function index(Request $req){
       $classes = Classes::select('id', 'name')->get();
-      $subjects = SubjectResource::collection($this->getFilterData(Subject::class, [
-        'like' => ["name", "short_name"], 'equal' => ['id'], 'classs'
-      ])->withQueryString());
-     // dd($subjects);
-      $params = $this->getParams();
+      $subjects = SubjectResource::collection(
+        Subject::leftJoin('groups', 'groups.id', '=', 'subjects.group_id')
+            ->select('subjects.id', 'subjects.name', 'subjects.short_name', 'groups.name as group')
+            ->when($req->search, function($query) use($req){
+              $query->orWhere('subjects.name', 'like', '%'.$req->search.'%')
+                  ->orWhere('subjects.short_name', 'like', '%'.$req->search.'%')
+                  ->orWhere('groups.name', 'like', '%'.$req->search.'%');
+            })
+            ->orderBy('subjects.id', $req->orderDirection ?? 'asc')
+            ->paginate()->withQueryString()
+      );
+      $params = request()->input();
       return inertia('Academic/Subject', compact('subjects', 'params', 'classes'));
     }
     

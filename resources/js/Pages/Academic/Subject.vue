@@ -51,7 +51,7 @@
               
               <thead class="bg-gray-1">
                 <tr>
-                  <th>ID</th>
+                  <th @click="handleSort">ID <i class="fa" :class="{'fa-sort-asc': filter.orderDirection == 'asc', 'fa-sort-desc': filter.orderDirection == 'desc'}"></i></th>
                   <th>Name</th>
                   <th>Short Name</th>
                   <th style="width: 30px"></th>
@@ -61,7 +61,7 @@
                 <tr v-for="(subject, index) in subjects.data">
                   <td>{{ subject.id }}</td>
                   <td>{{ subject.name }}</td>
-                  <td>{{ subject.short_name }}</td>
+                  <td>{{ subject.group }}</td>
                   <td class="text-right">
                     <Dropdown
                       stay
@@ -88,8 +88,12 @@
               </tbody>
             </table>
           </div>
+          
           <div class="p-2">
             <Pagination @traped="loadingTable = true" :items="subjects" />
+          </div>
+          <div>
+            <pre>{{ filter }}</pre>
           </div>
         </Card>
       </div>
@@ -171,6 +175,7 @@ export default {
       filter: reactive({
         search: this.params.search ?? null,
         per_page: this.params.per_page ?? 5,
+        orderDirection: this.params.orderDirection ?? 'asc',
       }),
 
       modal: { form: null, confirm: null },
@@ -187,6 +192,7 @@ export default {
         let query = {};
         if (state.search) query.search = state.search;
         if (state.per_page) query.per_page = state.per_page;
+        if (state.orderDirection) query.orderDirection = state.orderDirection;
 
         this.getsubjects(query);
       }, 1000),
@@ -200,6 +206,10 @@ export default {
     this.modal.confirm = new bootstrap.Modal(confirm);
   },
   methods: {
+    handleSort(){
+      this.filter.orderDirection == "desc" ? this.filter.orderDirection = "asc" : this.filter.orderDirection = "desc"
+      console.log(this.filter.orderDirection)
+    },
     getsubjects(filter = {}) {
       console.log(this.subjects)
       this.loadingTable = true;

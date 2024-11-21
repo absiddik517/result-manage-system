@@ -12,8 +12,8 @@
       
       <div>
         <form @submit.prevent="submit">
-          <Select v-model="form.exam_id" label-text="Exam" :options="exams" @change="getForm"/>
-          <Select v-model="form.class_id" label-text="Class" :options="classes" @change="getForm"/>
+          <Select v-if="!exam_id" v-model="form.exam_id" label-text="Exam" :options="exams" @change="getForm"/>
+          <Select v-if="!class_id" v-model="form.class_id" label-text="Class" :options="classes" @change="getForm"/>
           <Select 
             v-model="form.subject_id" 
             label-text="Subject" 
@@ -103,34 +103,16 @@ export default {
   props: {
     exams: Object,
     classes: Object,
-    
+    exam_id: Number,
+    class_id: Number,
   },
   data(){
     return {
       form: useForm({
-        exam_id: null,
-        class_id: null,
+        exam_id: this.exam_id ?? null,
+        class_id: this.class_id ?? null,
         subject_id: null,
         results: [],
-        /*
-        [{
-          exam_id: null,
-          class_id: null,
-          student_id: null,
-          subject_id: null,
-          total_mark_obtain: '',
-          point: 0,
-          grade: '',
-          status: '',
-          result: [{
-            title: '',
-            short_title: '',
-            mark_obtain: '',
-            status: ''
-          }]
-          
-        }],
-          */
       }),
       loaded: false,
       loading: false,

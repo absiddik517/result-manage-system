@@ -26,8 +26,6 @@ class StoreRequest extends FormRequest
       'class_id' => 'required',
       'roll' => ['required', new UniqueRoll() ],
       'name' => 'required|min:4',
-      'gender' => 'required',
-      'section' => 'nullable',
       'group_id' => 'nullable',
       'optional_subject_id' => 'nullable',
     ];

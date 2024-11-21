@@ -50,11 +50,9 @@ return new class extends Migration
         
         Schema::create('students', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('class_id');
             $table->integer('roll');
             $table->string('name');
-            $table->unsignedBigInteger('class_id');
-            $table->enum('gender', ['Male', 'Female', 'Others']);
-            $table->enum('section', ['A', 'B', 'C'])->nullable();
             $table->unsignedBigInteger('group_id')->nullable();
             $table->unsignedBigInteger('optional_subject_id')->nullable();
             $table->timestamps();
@@ -94,6 +92,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('short_name');
+            $table->boolean('isCompleted')->default(false);
             $table->timestamps();
         });
         

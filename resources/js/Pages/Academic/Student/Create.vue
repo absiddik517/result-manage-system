@@ -7,14 +7,15 @@
 
       <div>
         <form @submit.prevent="submit">
-          <Input
-            optional
+          <Select
+            v-if="!class_id"
             v-model="form.class_id"
-            field="class_id"
-            label="Class"
+            field="form.class_id"
+            label-text="Class"
             :form="form"
-            type="select"
-            :options="classes"
+            optional
+            :options="selectOption"
+            :error="form.errors.class_id"
             @change="getNewRoll"
           />
           <Input
@@ -30,24 +31,6 @@
             field="name"
             label="Name"
             :form="form"
-          />
-          <Input
-            optional
-            v-model="form.gender"
-            field="gender"
-            label="Gender"
-            :form="form"
-            type="select"
-            :options="genders"
-          />
-          <Input
-            optional
-            v-model="form.section"
-            field="section"
-            label="Section"
-            :form="form"
-            type="select"
-            :options="sections"
           />
           <Input
             v-if="classes[form.class_id]?.has_group"
@@ -83,10 +66,6 @@
               Save
             </Button>
           </div>
-
-          <div>
-            <pre>{{ classes }}</pre>
-          </div>
         </form>
       </div>
     </Card>
@@ -119,48 +98,19 @@ export default {
   },
   props: {
     classes: Object,
+    class_id: Number,
     groups: Object,
   },
   data() {
     return {
       form: useForm({
         name: "",
-        class_id: "",
+        class_id: this.class_id,
         roll: "",
-        gender: "",
-        section: "",
         group_id: "",
         optional_subject_id: "",
       }),
       loading: false,
-      genders: [
-        {
-          name: 'Male',
-          id: 'Male',
-        },
-        {
-          name: 'Female',
-          id: 'Female',
-        },
-        {
-          name: 'Others',
-          id: 'Others',
-        }
-      ],
-      sections: [
-        {
-          name: 'A',
-          id: 'A',
-        },
-        {
-          name: 'B',
-          id: 'B',
-        },
-        {
-          name: 'C',
-          id: 'C',
-        }
-      ]
     };
   },
   methods: {
@@ -170,7 +120,9 @@ export default {
         this.form.post(route("student.store"), {
           preserveScroll: true,
           onSuccess: () => {
-            this.form.reset();
+            this.form.name="";
+            this.getNewRoll()
+            
           },
           onError: (error) => {
             console.log(error);
@@ -194,6 +146,24 @@ export default {
       }
     }
   },
+  mounted() {
+    if(this.class_id){
+      this.getNewRoll()
+    }
+  },
+  computed: {
+    selectOption(){
+      let classes = Object.values(this.classes);
+      let result = [];
+      for(let i=0; i<classes.length; i++){
+        result.push({
+          value: classes[i].id,
+          label: classes[i].name
+        })
+      }
+      return result;
+    }
+  }
 };
 </script>
 

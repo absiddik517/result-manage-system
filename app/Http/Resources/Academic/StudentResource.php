@@ -17,13 +17,10 @@ class StudentResource extends JsonResource
     return [
       'id' => $this->id,
       'class_id' => $this->class_id,
-      'class_name' => $this->classs->name,
+      'class_name' => $this->classs,
       'roll' => $this->roll,
       'name' => $this->name,
-      'gender' => $this->gender,
-      'section' => $this->section,
-      'group' => optional($this->group)->name ?? null,
-      'optional' => optional($this->subject)->name ?? null,
+      'group' => $this->group,
       'delete_url' => route('student.delete', $this->id),
       'edit_url' => route('student.update', $this->id),
     ];

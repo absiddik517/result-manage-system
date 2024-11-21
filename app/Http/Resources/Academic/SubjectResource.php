@@ -19,6 +19,7 @@ class SubjectResource extends JsonResource
       'class_id' => $this->class_id,
       'name' => $this->name,
       'short_name' => $this->short_name,
+      'group' => $this->group,
       'delete_url' => route('subject.delete', $this->id),
       'edit_url' => route('subject.update', $this->id),
     ];

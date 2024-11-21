@@ -82,6 +82,7 @@
           height: 30px
           padding-top: 5px;
           border-bottom: 1px solid #000;
+          font-size: 20px;
         }
     </style>
 </head>
@@ -95,28 +96,17 @@
             <td style="text-align: center; vertical-align: top;">
               <div class="header">
                   <div class="school-info" >
-                    <div style="font-size: 36px;">{{ $institute['name'] }}</div>
+                    <div style="font-size: 36px;"><b>{{ $institute['name'] }}</b></div>
                     <p style="font-size: 18px;">{{ $institute['established_at'] }}</p>
                     <p style="font-size: 18px;">{{ $institute['address'] }}</p>
-                    <p style="font-size:18px;">{{ $institute['exam_name'] }}</p>
-                    <p style="font-size: 18px;">{{ $institute['class_name'] }}</p>
+                    <p style="font-size:18px;"><b>{{ $institute['exam_name'] }}</b></p>
+                    <p style="font-size: 18px;"><b>{{ $institute['class_name'] }}</b></p>
                   </div>
               </div>
             </td>
             <td style="width: 160px;"></td>
           </tr>
         </table>
-        <!--
-              <div class="header">
-            <div class="school-info">
-              <h2>{{ $institute['name'] }}</h2>
-              <p>{{ $institute['established_at'] }}</p>
-              <p>{{ $institute['address'] }}</p>
-              <p>{{ $institute['exam_name'] }}</p>
-              <p>{{ $institute['class_name'] }}</p>
-            </div>
-        </div>
-        -->
 
         @foreach($groups as $group_name => $group)
           @if($group_name != "NO_GROUP")
@@ -131,7 +121,7 @@
                       <th rowspan="2">রোল</th>
                       <th rowspan="2" style="width: 120px;">নাম</th>
                       @foreach($group['subjects'] as $subject => $item)
-                      <th colspan="{{ count($item['criteria']) + 1}}">{{ $subject }}</th>
+                      <th colspan="{{ count($item['criteria']) > 1 ? count($item['criteria']) + 1 : 0}}">{{ $subject }}</th>
                       @endforeach
                       <th rowspan="2">মোট</th>
                       <th rowspan="2">গ্রেড</th>
@@ -139,10 +129,14 @@
                   </tr>
                   <tr>
                     @foreach($group['subjects'] as $subject)
-                    @foreach($subject['criteria'] as $short_name => $k)
-                    <th style="font-size:10px;">{{ $short_name }}</th>
-                    @endforeach
-                    <th>মোট</th>
+                      @if(count($subject['criteria']) > 1)
+                        @foreach($subject['criteria'] as $short_name => $k)
+                        <th style="font-size:10px;">{{ $short_name }}</th>
+                        @endforeach
+                        <th>মোট</th>
+                      @else 
+                        <td style="padding:0;"></td>
+                      @endif
                     @endforeach
                   </tr>
               </thead>
@@ -152,9 +146,11 @@
                     <td>{{ bnum($student['roll']) }}</td>
                     <td style="text-align:left;">{{ $student['name'] }}</td>
                     @foreach($student['result'] as $subject)
+                      @if(count($subject['criteria']) > 1)
                       @foreach($subject['criteria'] as $item)
                         <td @if(!$item['status']) style="color: red;" @endif> {{ bnum($item['mark_obtain']) }}</td>
                       @endforeach
+                      @endif
                       <td>{{ bnum($subject['total_mark_obtain']) }}</td>
                     @endforeach
                     <td>{{ bnum($student['total']) }}</td>

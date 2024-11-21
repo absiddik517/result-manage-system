@@ -30,6 +30,6 @@ class Classes extends Model
     {
         return $this->belongsToMany(Subject::class, 'class_subjects', 'class_id')
                     ->withPivot('group_id')
-                    ->withTimestamps();
+                    ->orderBy('subjects.id', 'asc');
     }
 }

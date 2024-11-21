@@ -29,17 +29,21 @@ class IndexController extends Controller
       return inertia('Academic/Result/Index', compact('results', 'params'));
     }
     
-    public function create(){
+    public function create(Request $req){
       $exams = Exam::select('id as value', 'name as label')->get();
       $classes = Classes::select('id as value', 'name as label')->get();
-      return inertia('Academic/Result/Create', compact('exams', 'classes'));
+      $exam_id = $req->input('exam_id');
+      $class_id = $req->input('class_id');
+      return inertia('Academic/Result/Create', compact('exams', 'classes', 'exam_id', 'class_id'));
     }
     
     public function store(StoreRequest $req){
       $results = $this->cleanup($req->validated()['results']);
       //dd($results);
+      $exam_id = null; $class_id = null;
       try{
         foreach ($results as $data){
+          $exam_id = $data['exam_id']; $class_id = $data['class_id'];
           $id = $data['id'];
           $result = $data['result'];
           unset($data['id']);
@@ -64,7 +68,9 @@ class IndexController extends Controller
           'type' => 'error'
         ];
       }
-      return redirect()->route('result.index')->with('toast', $toast);
+      return redirect()->route('result.create', ['class_id' => $class_id, 'exam_id' => $exam_id])->with([
+        'toast' => $toast,
+      ]);
     }
     
     private function cleanup($data){

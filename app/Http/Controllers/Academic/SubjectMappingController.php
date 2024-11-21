@@ -55,7 +55,7 @@ class SubjectMappingController extends Controller
     }
     
     public function create(){
-      $exams = Exam::select(['id as value', 'name as label'])->get();
+      $exams = Exam::where('isCompleted', false)->select(['id as value', 'name as label'])->get();
       $classes = Classes::select(['id as value', 'name as label'])->get();
       return inertia('Academic/Mapping/Create', compact('exams', 'classes'));
     }
@@ -65,6 +65,8 @@ class SubjectMappingController extends Controller
       try{
         $created = 0;
         $updated = 0;
+        $exam_id = null;
+        $class_id = null;
         foreach ($req->validated()['mappings'] as $item){
           if($item['id']){
             SubjectMapping::find($item['id'])->update([
@@ -72,7 +74,7 @@ class SubjectMappingController extends Controller
               'subject_id' => $item['subject_id'],
               'class_id' => $item['class_id'],
               'full_mark' => $item['full_mark'],
-              'criteria' => json_encode($item['criteria']),
+              'criteria' => json_encode($item['criteria'] ?? ''),
             ]);
             $updated++;
           }else{
@@ -81,10 +83,12 @@ class SubjectMappingController extends Controller
               'subject_id' => $item['subject_id'],
               'class_id' => $item['class_id'],
               'full_mark' => $item['full_mark'],
-              'criteria' => json_encode($item['criteria']),
+              'criteria' => json_encode($item['criteria'] ?? ''),
             ]);
             $created++;
           }
+          $exam_id = $item['exam_id'];
+          $class_id = $item['class_id'];
         }
         $toast = [
           'message' => 'Operation successful!', 
@@ -96,7 +100,11 @@ class SubjectMappingController extends Controller
           'type' => 'error'
         ];
       }
-      return redirect()->route('exam.map.index')->with('toast', $toast);
+      return redirect()->route('exam.map.create')->with([
+        'toast' => $toast,
+        'exam_id' => $exam_id,
+        'class_id' => $class_id,
+      ]);
     }
     
     public function get_exams(){
@@ -150,10 +158,31 @@ class SubjectMappingController extends Controller
     
     public function prepareForm(Request $req){
       $class = Classes::where('id', $req->class_id)->with('subjects')->select('id', 'name')->first();
-      $exam_maps = SubjectMapping::where('exam_id', $req->exam_id)->where('class_id', $req->class_id)
-        ->select('id', 'subject_id', 'criteria', 'full_mark')->get();
+      if($class->subjects->count() === 0) abort(404, 'Subject not found in this class.');
+      $exams = SubjectMapping::where('class_id', $req->class_id)
+        ->where('exam_id', '!=', $req->exam_id)
+        ->join('exams', 'exams.id', '=', 'exam_subject_distributions.exam_id')
+        ->orderBy('exam_id', 'desc')
+        ->select('exam_id', 'name')->groupBy('exam_id', 'name')->get();
+      
+      $exam_maps = SubjectMapping::where('class_id', $req->class_id)
+        ->join('exams', 'exams.id', '=', 'exam_subject_distributions.exam_id')
+        ->select('exam_subject_distributions.id', 'exam_id', 'subject_id', 'criteria', 'full_mark', 'exams.name as exam')
+        ->get();
+      $previous_exams = [];
+      foreach ($exams as $exam){
+        $maps = $exam_maps->where('exam_id', $exam->exam_id);
+        $previous_exams[$exam->name] = $this->prepareMappings($class->subjects, $exam_maps->where('exam_id', $exam->exam_id), $req, true);
+      }
+      return [
+        'previous' => $exam_maps->where('exam_id', $req->exam_id)->count() === 0 ? $previous_exams : [],
+        'mappings' => $this->prepareMappings($class->subjects, $exam_maps->where('exam_id', $req->exam_id), $req)
+      ];
+    }
+    
+    private function prepareMappings($subjects, $exam_maps, $req, $isPrevious = false){
       $output = [];
-      foreach ($class->subjects as $sub){
+      foreach ($subjects as $sub){
         $output[$sub->id] = [
           'id' => null,
           'exam_id' => $req->exam_id,
@@ -166,7 +195,7 @@ class SubjectMappingController extends Controller
       }
       foreach ($exam_maps as $map){
         $output[$map->subject_id]['criteria'] = json_decode($map->criteria);
-        $output[$map->subject_id]['id'] = $map->id;
+        $output[$map->subject_id]['id'] = $isPrevious ? null :$map->id;
         $output[$map->subject_id]['full_mark'] = $map->full_mark;
       }
       

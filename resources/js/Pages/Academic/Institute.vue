@@ -90,7 +90,6 @@
               </div>
               <thead class="bg-gray-1">
                 <tr>
-                  <th v-show="columns.language">Language</th>
                   <th v-show="columns.name">Name</th>
                   <th v-show="columns.established_at">Established At</th>
                   <th v-show="columns.address">Address</th>
@@ -100,7 +99,6 @@
               </thead>
               <tbody>
                 <tr v-for="(institute, index) in institutes.data">
-                  <td v-show="columns.language">{{ institute.language }}</td>
                   <td v-show="columns.name">{{ institute.name }}</td>
                   <td v-show="columns.established_at">
                     {{ institute.established_at }}
@@ -147,14 +145,7 @@
   >
     <template #body>
       <form @submit.prevent="submit" novalidate="novalidate">
-        <Input
-          v-model="form.language"
-          field="language"
-          label="Language"
-          :form="form"
-          type="select"
-          :options="[{id: 'en', name: 'English'}, {id: 'bn', name: 'Bangla'}]"
-        />
+        
         <Input v-model="form.name" field="name" label="Name" :form="form" />
         <Input
           v-model="form.established_at"
@@ -224,10 +215,10 @@ export default {
   data() {
     return {
       form: useForm({
-        language: '',
         name: '',
         established_at: '',
         address: '',
+        pass_mark: 33,
         logo: '',
       }),
 

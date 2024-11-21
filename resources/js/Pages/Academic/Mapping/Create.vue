@@ -2,13 +2,29 @@
   <Content>
     <div class="row">
       <div class="col-12">
-        <Card varient="dark" title="Exam Subjects" :loading="loading">
+        <Card varient="dark" title="Exam Planning" :loading="loading">
           <div>
             <form @submit.prevent="submit">
-              <Select v-model="form.exam_id" label-text="Exam" :options="exams" @change="getForm"/>
-              <Select v-model="form.class_id" label-text="Order reference"
-              :options="classes" 
-              @change="getForm"/>
+              <div class="row">
+                <div :class="{'col-md-6': has_previous, 'col-12': !has_previous,}">
+                  <Select v-model="form.exam_id" label-text="Exam" :options="exams" @change="getForm"/>
+                  <Select v-model="form.class_id" label-text="Order reference"
+                  :options="classes" 
+                  @change="getForm"/>
+                </div>
+                <div class="col-md-6">
+                  <Card v-if="has_previous" title="Previous exams">
+                    <template #title_right>
+                      <Button type="button" @click="newPlan()" varient="info">New Plan</Button>
+                    </template>
+                    <div @click="copyPreviousMapping(data)" v-for="(data, exam) in form_data.previous" :key="exam" style="width:100%; padding: 10px 18px; border-radius: 5px; background: rgba(154,162,255,0.749); margin-bottom: 8px;">
+                      {{ exam }}
+                    </div>
+                  </Card>
+                </div>
+              </div>
+              
+              
               <div class="row">
               <div
                 class="items_container col-sm-12 col-md-6"
@@ -19,6 +35,7 @@
                   <div>
                     <Button
                       v-show="index > 0"
+                      size="sm"
                       class="ml-2"
                       varient="primary"
                       type="button"
@@ -26,6 +43,7 @@
                       ><i class="fa fa-copy"></i></Button>
                     <Button
                       v-show="this.form.mappings.length > 1"
+                      size="sm"
                       class="ml-2"
                       varient="success"
                       type="button"
@@ -33,6 +51,7 @@
                       ><i class="fa fa-plus"></i></Button>
                     <Button
                       v-show="this.form.mappings.length > 1"
+                      size="sm"
                       class="ml-2"
                       varient="danger"
                       type="button"
@@ -111,6 +130,7 @@
 import { Content, AdminLayout, Card, Button, Input, Select, Switch } from '@/Components';
 import { Inertia } from "@inertiajs/inertia";
 import {useForm} from "@inertiajs/inertia-vue3";
+import toast from "@/Store/toast.js";
 export default {
   name: 'Index',
   layout: AdminLayout,
@@ -128,6 +148,8 @@ export default {
       }),
       loading: false,
       pass_at: 33,
+      form_data: undefined,
+      has_previous: false,
     }
   },
   methods: {
@@ -155,18 +177,37 @@ export default {
     async getForm() {
       if (!this.form.class_id || !this.form.exam_id) return;
       this.loading = true;
-      try {
-        const response = await axios.get(route('exam.map.form', {
+      this.form.mappings = [];
+      let url = route('exam.map.form', {
           exam_id: this.form.exam_id,
           class_id: this.form.class_id
-        }));
-        this.form.mappings = this.convertToArray(response.data);
+        });
+      console.log(url)
+      try {
+        const response = await axios.get(url);
+        if(response.data.previous.length === 0){
+          this.form.mappings = this.convertToArray(response.data.mappings);
+          this.has_previous = false
+        }else{
+          this.has_previous = true
+          this.form_data = response.data;
+        }
         console.log(this.form.mappings)
       } catch (error) {
-        console.log('Error on getSubjects', error);
+        toast.add({
+          type: 'error',
+          message: error.response.data.message
+        })
+        console.log('Error on getSubjects', error.response.data.message);
       } finally {
         this.loading = false;
       }
+    },
+    newPlan(){
+      this.form.mappings = this.convertToArray(this.form_data.mappings);
+    },
+    copyPreviousMapping(data){
+      this.form.mappings = this.convertToArray(data);
     },
     addCriteria(index){
       this.form.mappings[index].criteria.push({

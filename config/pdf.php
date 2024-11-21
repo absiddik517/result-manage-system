@@ -23,13 +23,13 @@ return [
     'watermark_text_alpha'     => 0.1,
     'watermark_image_path'     => base_path('storage/images/logo.png'),
     'watermark_image_alpha'    => 0.1,
-    'watermark_image_size'     => 'P',
+    'watermark_image_size'     => 'F',
     'watermark_image_position' => 'P',
     'custom_font_dir'  => base_path('resources/fonts/'), // don't forget the trailing slash!
     'custom_font_data' => [
         'nikosh' => [ // Custom font settings for Bengali.
             'R' => 'Nikosh.ttf', // Bold font file.
-            'B' => 'Nikosh.ttf', // Bold font file.
+            //'B' => 'Nikosh.ttf', // Bold font file.
             'useOTL' => 0xFF, // OTL support.
             'useKashida' => 75 // Kashida width.
         ],

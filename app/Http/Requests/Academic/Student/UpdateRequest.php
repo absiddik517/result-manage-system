@@ -27,8 +27,6 @@ class UpdateRequest extends FormRequest
       'class_id' => 'required',
       'roll' => 'required',
       'name' => 'required|min:4',
-      'gender' => 'required',
-      'section' => 'nullable',
       'group_id' => 'nullable',
       'third_subject_id' => 'nullable',
     ];

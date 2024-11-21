@@ -64,7 +64,7 @@
 
         .marks-table th,
         .marks-table td {
-            padding: 8px;
+            padding: 4px 6px;
             text-align: center;
             border: 1px solid #000;
             font-size: 14px;
@@ -148,14 +148,19 @@
         <table class="marks-table">
             <thead>
                 <tr>
-                    <th colspan="2">বিষয়</th>
-                    <th>পূর্ণমান</th>
+                    <th colspan="2" rowspan="2">বিষয়</th>
+                    <th rowspan="2">পূর্ণমান</th>
+                    <th colspan="{{ count($theads) > 1 ? count($theads) + 1 : 0 }}">প্রাপ্ত নম্বর</th>
+                    <th rowspan="2">সর্বোচ্চ</th>
+                    <th rowspan="2">গ্রেড</th>
+                </tr>
+                <tr>
                     @foreach($theads as $title)
                     <th style="width:auto;">{{ $title }}</th>
                     @endforeach
+                    @if(count($theads) > 1)
                     <th>মোট</th>
-                    <th>সর্বোচ্চ</th>
-                    <th>গ্রেড</th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
@@ -166,12 +171,14 @@
                     <td style="text-align:left;">{{ $name }}</td>
                     <td>{{ bnum($subject['full_mark']) }}</td>
                     @foreach($theads as $title)
+                      @if(count($theads) > 1)
                       @if(isset($subject['result'][$title]))
                         <td @if(!$subject['result'][$title]['status'])
                         style="color: red;" @endif>{{
                         bnum($subject['result'][$title]['mark_obtain']) }} </td>
                       @else
                         <td>-</td>
+                      @endif
                       @endif
                     @endforeach
                     <td 
@@ -182,8 +189,8 @@
                     >
                       {{ bnum($subject['total_mark_obtain']) }}
                     </td>
-                    <td @if($max[$name]['max'] == $subject['total_mark_obtain']) style="color: green;" @endif>
-                      {{ bnum($max[$name]['max']) }}
+                    <td>
+                      {{ bnum($max[$name]['max'] ?? 0) }}
                     </td>
                     <td>{{ $subject['grade'] }}</td>
                 </tr>
@@ -194,7 +201,9 @@
                     <td colspan="{{ count($theads) + 1 }}"
                     style="text-align:right">{{ bnum($student['result']['total_marks']) }}</td>
                     <td></td>
+                    @if(count($theads) > 1)
                     <td></td>
+                    @endif
                 </tr>
             </tbody>
         </table>

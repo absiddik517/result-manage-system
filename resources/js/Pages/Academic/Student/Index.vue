@@ -89,11 +89,9 @@
                     <div>{{ student.class_name }}</div>
                     <div class="d-flex justify-content-between"><span class="text-muted">Roll:</span> <strong class="ml-2">{{ student.roll }}</strong></div>
                     <div v-if="student.section" class="d-flex justify-content-between"><span class="text-muted">Section:</span> <strong class="ml-2">{{ student.section }}</strong></div>
-                    <div class="d-flex justify-content-between"><span class="text-muted">ID:</span> <strong class="ml-2">{{ student.id }}</strong></div>
                   </td>
                   <td>
-                    <div><center><strong>{{ student.name }}</strong></center></div>
-                    <div class="d-flex justify-content-between"><span class="text-muted">Gender:</span> <span class="ml-2">{{ student.gender }}</span></div>
+                     {{ student.name }}
                   </td>
                   <td v-if="student.group">
                     <div><center><strong>{{ student.group }}</strong></center></div>

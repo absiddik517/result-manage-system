@@ -15,20 +15,30 @@ use App\Http\Resources\Academic\StudentResource;
 class StudentController extends Controller
 {
     use Filter;
-    public function index(){
+    public function index(Request $req){
       $classes = Classes::select(['id as value', 'name as label'])->get();
-      $students = StudentResource::collection($this->getFilterData(Student::class, [
-        'like' => ["name"], 'equal' => ['roll', 'gender', 'section']
-      ], ['classs', 'group', 'subject'])->withQueryString());
+      $students = StudentResource::collection(
+        Student::leftJoin('groups', 'groups.id', '=', 'students.group_id')
+        ->join('classes', 'classes.id', '=', 'students.class_id')
+        ->when($req->search, function($query) use($req){
+          $query->orWhere('students.name', 'like', '%'.$req->search.'%')
+              ->orWhere('groups.name', 'like', '%'.$req->search.'%')
+              ->orWhere('classes.name', 'like', '%'.$req->search.'%')
+              ->orWhere('students.roll', $req->search);
+        })
+        ->select('students.id', 'students.class_id', 'students.roll', 'students.name', 'groups.name as group', 'classes.name as classs')
+        ->paginate($req->per_page ?? 5)->withQueryString()
+      );
       //return $students;
-      $params = $this->getParams();
+      $params = $req->input();
       return inertia('Academic/Student/Index', compact('students', 'params', 'classes'));
     }
     
-    public function create(){
+    public function create(Request $req){
       $classes = pluckByKey(Classes::select('id', 'name', 'has_group')->get());
       $groups = \DB::table('groups')->select('name', 'id')->get();
-      return inertia('Academic/Student/Create', compact('classes', 'groups'));
+      $class_id = $req->class_id;
+      return inertia('Academic/Student/Create', compact('classes', 'groups', 'class_id'));
     }
     
     public function store(StoreRequest $req){
@@ -44,6 +54,7 @@ class StudentController extends Controller
           'type' => 'error'
         ];
       }
+      return redirect()->route('student.create', ['class_id' => $req->class_id])->with(['toast' => $toast]);
       return redirect()->route('student.index')->with('toast', $toast);
     }
     
