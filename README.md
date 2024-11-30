@@ -35,14 +35,8 @@ composer install && npm install && npm run dev
 
 ### Final touch !
 ```
-cp env.example .env && touch database/database.sqlite && php artisan migrate --seed && php artisan serve
+cp env.example .env && touch database/database.sqlite && php artisan migrate --seed && php artisan storage:link && php artisan serve
 ```
 
-### If there is any error with media (i.e. photo) run the command bellow.
-Before running this command make sure you have deleted public/storage folder if it is exist. 
-
-```
-php artisan storage:link
-```
 
 
