@@ -28,7 +28,6 @@ use App\Http\Controllers\Pdf\AdmitcardController;
 
 
 use Inertia\Inertia;
-use App\Http\Controllers\AuthController;
 
 
 /*
@@ -41,8 +40,6 @@ use App\Http\Controllers\AuthController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/authenticate', [AuthController::class, 'index'])->name('authenticate');
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [

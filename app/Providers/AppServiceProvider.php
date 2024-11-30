@@ -24,9 +24,20 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->cacheEssentials();
+        if($this->isDatabaseReady()){
+          $this->cacheEssentials();
+        }
         \Illuminate\Support\Facades\Schema::defaultStringLength(191);
         //\Illuminate\Http\Resources\Json\JsonResource::withoutWrapping();
+    }
+    
+    private function isDatabaseReady(): bool
+    {
+        try {
+            return Schema::hasTable('settings'); // Ensure 'settings' table exists
+        } catch (\Exception $e) {
+            return false; // Database connection issue or table missing
+        }
     }
     
     private function cacheEssentials(){
