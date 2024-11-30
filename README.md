@@ -35,7 +35,7 @@ composer install && npm install && npm run dev
 
 ### Final touch !
 ```
-cp env.example .env && php artisan migrate --seed && php artisan serve
+cp env.example .env && touch database/database.sqlite && php artisan migrate --seed && php artisan serve
 ```
 
 ### If there is any error with media (i.e. photo) run the command bellow.
