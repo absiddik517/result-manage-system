@@ -2,75 +2,54 @@
   <Content>
     <div class="row">
       <div class="col-md-6">
-        <Card varient="dark" :loading="loading" title="Downloads" body-class="p-0">
-          <table class="table table-bodered">
-            <tbody>
-              <tr>
-                <td>Result entry sheet</td>
-                <td style="width: 40%;">
-                  <select class="form-control" v-model="filter.exam_id">
-                    <option value="">Exam</option>
-                    <option v-for="exam in exams" :value="exam.id"> {{ exam.name }} </option>
-                  </select>
-                </td>
-                <td></td>
-                <td class="text-right" style="width: 40px;">
-                  <a :href="route('pdf.result.form', {exam_id: filter.exam_id})" target="_blank"><Pdfd /></a>
-                </td>
-              </tr>
-              <tr>
-                <td>Exam plan</td>
-                <td style="width: 40%;">
-                  <select class="form-control" v-model="filter.exam_id">
-                    <option value="">Exam</option>
-                    <option v-for="exam in exams" :value="exam.id"> {{ exam.name }} </option>
-                  </select>
-                </td>
-                <td></td>
-                <td class="text-right" style="width: 40px;">
-                  <a :href="route('pdf.exam.form', {exam_id: filter.exam_id})" target="_blank"><Pdfd /></a>
-                </td>
-              </tr>
-              <tr>
-                <td>Admit</td>
-                <td>
-                  <select class="form-control" v-model="filter.exam_id">
-                    <option value="">Exam</option>
-                    <option v-for="exam in exams" :value="exam.id"> {{ exam.name }} </option>
-                  </select>
-                </td>
-                <td>
-                  <select class="form-control" v-model="filter.class_id">
-                    <option value="">Class</option>
-                    <option v-for="classs in classes" :value="classs.id"> {{ classs.name }} </option>
-                  </select>
-                </td>
-                <td class="text-right" style="width: 40px;">
-                  <a :href="route('pdf.admit', {exam_id: filter.exam_id, class_id: filter.class_id})" target="_blank"><Pdfd /></a>
-                </td>
-                
-              </tr>
-              <tr>
-                <td>Attendance Sheet</td>
-                <td>
-                  <select class="form-control" v-model="filter.exam_id">
-                    <option value="">Exam</option>
-                    <option v-for="exam in exams" :value="exam.id"> {{ exam.name }} </option>
-                  </select>
-                </td>
-                <td>
-                  <select class="form-control" v-model="filter.class_id">
-                    <option value="">Class</option>
-                    <option v-for="classs in classes" :value="classs.id"> {{ classs.name }} </option>
-                  </select>
-                </td>
-                <td class="text-right" style="width: 40px;">
-                  <a :href="route('pdf.attendance_sheet', {exam_id: filter.exam_id, class_id: filter.class_id})"><Pdfd /></a>
-                </td>
-                
-              </tr>
-            </tbody>
-          </table>
+        <Card varient="gray" title="Result entry sheet">
+          <select class="form-control" v-model="form.entry.exam_id">
+            <option value="">Exam</option>
+            <option v-for="exam in exams" :value="exam.id"> {{ exam.name }} </option>
+          </select>
+          <div class="text-center mt-2">
+            <a v-if="form.entry.exam_id" :href="route('pdf.result.form', {exam_id: form.entry.exam_id})" target="_blank">Download <Pdfd /></a>
+          </div>
+        </Card>
+        <Card varient="dark" title="Exam Plan">
+          <select class="form-control" v-model="form.plan.exam_id">
+            <option value="">Exam</option>
+            <option v-for="exam in exams" :value="exam.id"> {{ exam.name }} </option>
+          </select>
+          <div class="text-center mt-2">
+            <a v-if="form.plan.exam_id" :href="route('pdf.result.form', {exam_id: form.plan.exam_id})" target="_blank">Download <Pdfd /></a>
+          </div>
+        </Card>
+        <Card varient="gray" title="Admit Card">
+          <select class="form-control" v-model="form.admit.exam_id">
+            <option value="">Exam</option>
+            <option v-for="exam in exams" :value="exam.id"> {{ exam.name }} </option>
+          </select>
+          <select class="form-control mt-2" v-model="form.admit.class_id">
+            <option value="">Class</option>
+            <option v-for="classs in classes" :value="classs.id"> {{ classs.name }} </option>
+          </select>
+          <div class="text-center mt-2">
+            <a v-if="form.admit.exam_id && form.admit.class_id" :href="route('pdf.admit', {exam_id: form.admit.exam_id, class_id: form.admit.class_id})" target="_blank">Download <Pdfd /></a>
+          </div>
+        </Card>
+        <Card varient="dark" title="Attendance Sheet">
+          <select class="form-control" v-model="form.attendance.exam_id">
+            <option value="">Exam</option>
+            <option v-for="exam in exams" :value="exam.id"> {{ exam.name }} </option>
+          </select>
+          <select class="form-control mt-2" v-model="form.attendance.class_id">
+            <option value="">Class</option>
+            <option v-for="classs in classes" :value="classs.id"> {{ classs.name }} </option>
+          </select>
+          <select class="form-control mt-2" v-model="form.attendance.paper_size">
+            <option value="">Paper Size</option>
+            <option value="A4">A4</option>
+            <option value="Legal">Legal</option>
+          </select>
+          <div class="text-center mt-2">
+            <a v-if="form.attendance.exam_id && form.attendance.class_id" :href="route('pdf.attendance_sheet', {exam_id: form.attendance.exam_id, class_id: form.attendance.class_id, paper_size: form.attendance.paper_size,})" target="_blank">Download <Pdfd /></a>
+          </div>
         </Card>
       </div>
     </div>
@@ -109,6 +88,23 @@ export default {
   data() {
     return {
       loading: false,
+      form: {
+        entry: reactive({
+          exam_id: '',
+        }),
+        plan: reactive({
+          exam_id: '',
+        }),
+        admit: reactive({
+          exam_id: '',
+          class_id: '',
+        }),
+        attendance: reactive({
+          exam_id: '',
+          class_id: '',
+          paper_size: '',
+        }),
+      },
       filter: reactive({
         exam_id: '',
         class_id: '',

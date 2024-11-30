@@ -7,7 +7,7 @@
 
 <p align="center">
 <a href="https://facebook.com/absiddik.u" target="_blank">Facebook</a>
-<a href="mailto: absiddik517@gmail'com">Mail</a>
+<a href="mailto:absiddik517@gmail.com">Mail</a>
 </p>
 
 ## About the project
@@ -18,14 +18,22 @@ This is single page application to manage a manage school result. All the requir
 
 Run this composer command in your laravel application:
 
+### Install ext-gd extension first.
 ```
-git clone https://github.com/absiddik517/result-manage-system.git rms
-```
-
-```
-cd rms && composer install && npm install && npm run dev 
+pkg install php-gd
 ```
 
+### Clone git repository 
+```
+git clone https://github.com/absiddik517/result-manage-system.git rms && cd rms 
+```
+
+### Install Required Dependancies
+```
+composer install && npm install && npm run dev 
+```
+
+### Final touch !
 ```
 cp env.example .env && php artisan migrate --seed && php artisan serve
 ```

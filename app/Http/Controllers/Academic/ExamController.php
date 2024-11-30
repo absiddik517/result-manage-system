@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Academic;
 
 use Exception;
 use App\Models\Exam;
+use App\Models\Result;
+use App\Models\SubjectMapping;
 use Illuminate\Http\Request;
 use App\Helper\Traits\Filter;
 use App\Http\Controllers\Controller;
@@ -56,7 +58,9 @@ class ExamController extends Controller
     }
     
     public function destroy($id){
-      //sleep(5);
+      $results = Result::where('exam_id', $id)->count();
+      $mappings = SubjectMapping::where('exam_id', $id)->count();
+      if($results + $mappings !== 0) return redirect()->back()->with('toast', ['type' => 'error', 'message' => "Failed to delete exam as child found."]);
       try{
         $exam = Exam::findOrFail($id);
         $exam->delete();

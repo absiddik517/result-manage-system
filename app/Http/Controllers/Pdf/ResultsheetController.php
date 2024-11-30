@@ -14,6 +14,7 @@ use App\Models\Group;
 use App\Models\Result;
 use App\Models\Student;
 use App\Models\Institute;
+use Illuminate\Support\Facades\Cache;
 
 class ResultsheetController extends Controller
 {
@@ -35,21 +36,21 @@ class ResultsheetController extends Controller
     }
     
     private function process_results($req){
-      $institute = Institute::select('name', 'address', 'established_at')
-                  ->addSelect([
-                    'exam_name' => \DB::table('exams')->where('id', $req->exam_id)->select('name'),
-                    'class_name' => \DB::table('classes')->where('id', $req->class_id)->select('name'),
-                    'has_group' => \DB::table('classes')->where('id', $req->class_id)->select('has_group'),
-                  ])
-                  ->first();
-      if(!$institute) abort(403, 'Institute not found, Set it first.');
-      if($institute->has_group){
+      $institute = Cache::get('institute');
+      $exam = Exam::where('id', $req->exam_id)->select('name as exam_name')
+              ->addSelect([
+                'class_name' => \DB::table('classes')->where('id', $req->class_id)->select('name'),
+                'has_group' => \DB::table('classes')->where('id', $req->class_id)->select('has_group'),
+              ])
+              ->first();
+      if($exam->has_group){
         $data = $this->process_group_result($req);
       }else{
         $data = $this->process_student_result($req);
       }
       return [
         "institute" => $institute,
+        "exam" => $exam,
         "groups" => $data
       ];
     }

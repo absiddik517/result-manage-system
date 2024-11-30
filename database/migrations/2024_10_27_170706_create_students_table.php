@@ -13,15 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('institutes', function (Blueprint $table) {
+        Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('established_at')->nullable();
-            $table->string('address');
-            $table->integer('pass_mark')->nullable;
-            $table->string('logo')->nullable();
+            $table->string('key');
+            $table->longText('value');
             $table->timestamps();
         });
+        
         Schema::create('groups', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
@@ -150,7 +148,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('institutes');
+        Schema::dropIfExists('settings');
         Schema::dropIfExists('groups');
         Schema::dropIfExists('classes');
         Schema::dropIfExists('class_subjects');

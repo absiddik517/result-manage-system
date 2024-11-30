@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Academic\Result;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use App\Models\Exam;
 use App\Models\SubjectMapping;
 use App\Models\Classes;
@@ -14,7 +15,7 @@ use App\Models\Institute;
 class ResultController extends Controller
 {
     public function index(){
-      $institute = Institute::orderBy('id','DESC')->first();
+      $institute = Cache::get('institute');
       $exams = Exam::select('id as value', 'name as label')->get();
       $classes = Classes::select('id as value', 'name as label')->get();
       

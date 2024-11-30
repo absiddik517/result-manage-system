@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -39,6 +40,8 @@ class HandleInertiaRequests extends Middleware
         return array_merge(parent::share($request), [
             'toast' => session('toast'),
             'auth_permissions' => session()->get('permissions') ?? [], 
+            "institute" => Cache::get('institute'),
+            "logo" => Cache::get('logo'),
         ]);
     }
 }

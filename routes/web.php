@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\Gate\RoleController;
 use App\Http\Controllers\Gate\PermissionController;
 
 use App\Http\Controllers\PdfController;
+use App\Http\Controllers\SettingController;
 
 use App\Http\Controllers\Academic\InstituteController;
 use App\Http\Controllers\Academic\ClassesController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\Academic\SubjectController;
 use App\Http\Controllers\Academic\ExamController;
 use App\Http\Controllers\Academic\SubjectMappingController;
 use App\Http\Controllers\Academic\StudentController;
+use App\Http\Controllers\Academic\StudentPromotionController;
 use App\Http\Controllers\Academic\Result\IndexController;
 use App\Http\Controllers\Academic\Result\ResultController;
 
@@ -49,6 +51,15 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
+});
+
+Route::prefix('settings')->name('setting.')->middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function(){
+  Route::get('/', [SettingController::class, 'index'])->name('index');
+  Route::post('/update-institute', [SettingController::class, 'update_institute'])->name('institute');
+  Route::post('/update-logo', [SettingController::class, 'update_logo'])->name('logo');
+  Route::post('/update-pass-mark', [SettingController::class, 'update_pass_mark'])->name('pass_mark');
+  Route::post('/update-admit-template', [SettingController::class, 'update_admit_template'])->name('admit');
+  Route::get('/test', [SettingController::class, 'getPdfFiles'])->name('hi');
 });
 
 Route::middleware([
@@ -128,7 +139,7 @@ Route::prefix('exam')->name('exam.')->middleware(['auth:sanctum', config('jetstr
     Route::get('/create', [SubjectMappingController::class, 'create'])->name('create');
     Route::post('/store', [SubjectMappingController::class, 'store'])->name('store');
     Route::post('/{id}/update', [SubjectMappingController::class, 'update'])->name('update');
-    Route::delete('/{id}/delete', [SubjectMappingController::class, 'destroy'])->name('delete');
+    Route::delete('/{exam_id}/{class_id}/delete', [SubjectMappingController::class, 'destroy'])->name('delete');
     Route::get('/exams', [SubjectMappingController::class, 'get_exams'])->name('exam.get');
     Route::get('/subjects/{class_id}', [SubjectMappingController::class, 'get_subjects'])->name('subject.get');
     Route::get('/form/', [SubjectMappingController::class, 'prepareForm'])->name('form');
@@ -144,6 +155,9 @@ Route::prefix('student')->name('student.')->middleware(['auth:sanctum', config('
   Route::get('/roll/latest', [StudentController::class, 'get_roll'])->name('roll.get');
   
   Route::get('/get/students', [StudentController::class, 'get_students'])->name('get.select');
+  
+  Route::get('/promostion', [StudentPromotionController::class, 'index'])->name('promotion');
+  Route::get('/get/{class_id}', [StudentPromotionController::class, 'getStudents'])->name('get');
 });
 
 Route::prefix('institute')->name('institute.')->middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function(){

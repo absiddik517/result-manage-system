@@ -6,6 +6,7 @@ use DB;
 use Exception;
 use App\Models\Exam;
 use App\Models\Classes;
+use App\Models\Result;
 use App\Models\Subject;
 use App\Models\SubjectMapping;
 use Illuminate\Http\Request;
@@ -42,7 +43,9 @@ class SubjectMappingController extends Controller
             }
             $data[] = [
               'exam' => $exam->name,
+              'exam_id' => $exam->id,
               'class' => $class->name,
+              'class_id' => $class->id,
               'subjects' => $tempsub,
             ];
           }
@@ -138,13 +141,21 @@ class SubjectMappingController extends Controller
       return redirect()->back()->with('toast', $toast);
     }
     
-    public function destroy($id){
-      //sleep(5);
-      try{
-        $subjectmapping = SubjectMapping::findOrFail($id);
-        $subjectmapping->delete();
+    public function destroy($exam_id, $class_id){
+      $results = Result::where('exam_id', $exam_id)->where('class_id', $class_id)->count();
+      if($results !== 0) {
         $toast = [
-          'message' => 'SubjectMapping <strong>'.$subjectmapping->name.'</strong> has <kbd>deleted</kbd> successfull!', 
+            'message' => "Can not delete as child found.", 
+            'type' => 'error'
+          ];
+        return redirect()->back()->with('toast', $toast);
+      }
+      
+      try{
+        SubjectMapping::where('exam_id', $exam_id)->where('class_id', $class_id)->delete();
+        
+        $toast = [
+          'message' => 'Operation Successful!', 
           'type' => 'success'
         ];
       }catch(\Exception $e){

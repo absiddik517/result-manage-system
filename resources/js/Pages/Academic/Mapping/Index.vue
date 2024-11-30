@@ -104,19 +104,10 @@
                       <Button
                         btnDropdown
                         type="button"
-                        @click="deletesubjectmapping(subjectmapping.delete_url)"
+                        @click="deleteMapping(subjectmapping.exam_id, subjectmapping.class_id)"
                       >
                         <i class="fa fa-trash"></i> Delete
                       </Button>
-                      <!--
-                      <Button
-                        btnDropdown
-                        type="button"
-                        @click="showModal(subjectmapping)"
-                      >
-                        <i class="fa fa-edit"></i> Edit
-                      </Button>
-                      -->
                     </Dropdown>
                   </td>
                 </tr>
@@ -159,6 +150,7 @@
         </Card>
       </div>
     </div>
+    <DeleteConfirm :deleteUrl="deleteUrl" item="exam" />
   </Content>
 </template>
 
@@ -214,6 +206,8 @@ export default {
         data: null,
       }),
       loading: false,
+      deleteUrl: null,
+      confirm_model: undefined,
     };
   },
   watch: {
@@ -228,6 +222,8 @@ export default {
     },
   },
   mounted() {
+    let confirm = document.querySelector("#confirmModel");
+    this.confirm_model = new bootstrap.Modal(confirm);
     if(this.subjectmappings.length){
       this.detail.index = 0;
       this.detail.data = this.subjectmappings[0];
@@ -236,6 +232,14 @@ export default {
   methods: {
     handleRowClick(index){
       this.detail.index = index
+    },
+    deleteMapping(exam_id, class_id) {
+        this.deleteUrl = route('exam.map.delete', {exam_id, class_id});
+        this.confirm_model.show();
+        Inertia.on("finish", () => {
+            this.deleteUrl = null;
+            this.confirm_model.hide();
+        });
     },
     
     getsubjectmappings(filter = {}) {

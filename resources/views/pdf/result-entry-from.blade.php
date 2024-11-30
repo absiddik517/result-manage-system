@@ -67,7 +67,7 @@
         <table class="marks-table no-break">
             <tr>
               <td colspan="{{ count($criteria ?? [])+2 }}">
-                {{ $institute['exam_name'] }}
+                {{ $exam->name }}
               </td>
             </tr>
             <tr>

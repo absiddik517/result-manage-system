@@ -21,8 +21,15 @@
     >
       <template v-slot:singlelabel="{ value }">
         <div class="multiselect-single-label">
-          <img v-show="value.img" class="character-label-icon" :src="value.img || 'default-image-url'" />
-          {{ value.label }} <span class="text-muted" v-show="additional.length > 0"> &nbsp; ({{ value[additional[0]] }})</span>
+          <img
+            v-show="value.img"
+            class="character-label-icon"
+            :src="value.img || 'default-image-url'"
+          />
+          {{ value.label }}
+          <span class="text-muted" v-show="additional.length > 0">
+            &nbsp; ({{ value[additional[0]] }})</span
+          >
         </div>
       </template>
 
@@ -49,29 +56,29 @@
 
 <script>
 import Multiselect from "@vueform/multiselect";
-import { random_str } from '@/Composable/functions';
-import toast from '../Store/toast';
+import { random_str } from "@/Composable/functions";
+import toast from "../Store/toast";
 import axios from "axios";
 
 export default {
   components: {
-    Multiselect,
+    Multiselect
   },
   props: {
     modelValue: [String, Number, Object],
     include: String,
     dependOn: {
       type: Object,
-      default: null,
+      default: null
     },
     searchable: {
       type: Boolean,
-      default: true,
+      default: true
     },
     object: Boolean,
     placeholder: {
       type: String,
-      default: "Select one",
+      default: "Select one"
     },
     options: {
       type: [Array, Object],
@@ -96,12 +103,12 @@ export default {
     withoutLabel: Boolean,
     getRow: {
       type: Function,
-      default: function() {}
+      default: function () {}
     },
     send: {
-      type:Object,
+      type: Object,
       default: {}
-    },
+    }
   },
   data() {
     return {
@@ -110,7 +117,7 @@ export default {
       raw_records: [],
       isFatching: false,
       lastFetchingQuery: null,
-      storage: {},
+      storage: {}
     };
   },
   computed: {
@@ -120,9 +127,9 @@ export default {
     },
     disabled() {
       let bool = this.loading || this.disableIf;
-      if(this.dependOn) {
-        for(let field in this.dependOn){
-          if(this.dependOn[field] == '' || this.dependOn[field] == null){
+      if (this.dependOn) {
+        for (let field in this.dependOn) {
+          if (this.dependOn[field] == "" || this.dependOn[field] == null) {
             bool = bool || true;
           }
         }
@@ -130,92 +137,94 @@ export default {
       return bool;
     },
     group_classes() {
-      return 'form-group ' + this.groupClass;
+      return "form-group " + this.groupClass;
     },
     input_id() {
       return this.id || random_str();
-    },
+    }
   },
   watch: {
     dependOn: {
       handler: function (state, old) {
-        if(!this.sameObject(state, old)) {
-          this.$emit("update:modelValue", '');
+        if (!this.sameObject(state, old)) {
+          this.$emit("update:modelValue", "");
         }
-        for(let field in state){
-          if(state[field] == '' || state[field] == null) return;
+        for (let field in state) {
+          if (state[field] == "" || state[field] == null) return;
         }
-        if(this.isFatching) return;
-        if(this.dependOn){
+        if (this.isFatching) return;
+        if (this.dependOn) {
           let url = this.route(this.from, this.dependOn);
-          if(this.storage[url]){
+          if (this.storage[url]) {
             this.raw_records = this.storage[url];
             this.records = this.prepare(this.storage[url]);
-          }else{
+          } else {
             this.fetchDependedOptions();
           }
         }
       },
-      deep: true,
-    },
+      deep: true
+    }
   },
   mounted() {
     this.fetchOptions(null, null, this.modelValue);
   },
   methods: {
     async fetchOptions(name = "", event = null, id = undefined) {
-      if(this.dependOn) return;
+      if (this.dependOn) return;
       let form_data = this.send;
       if (name) form_data.name = name;
       if (id) form_data.id = id;
-      
+
       if (!this.from) return;
       console.log(route(this.from, form_data));
       if (this.lastFetchingQuery == form_data) return;
       this.isFatching = true;
-      try{
+      try {
         await axios
           .get(`${this.route(this.from, form_data)}`)
-          .then((response) => {
+          .then(response => {
             this.records = this.prepare(response.data);
             this.raw_records = response.data;
             this.lastFetchingQuery = form_data;
-          })
-          this.isFatching = false;
-      }catch(error){
+          });
+        this.isFatching = false;
+      } catch (error) {
         console.log(error);
       }
     },
-    
+
     async fetchDependedOptions() {
       let url = this.route(this.from, this.dependOn);
-      console.log(url)
+      console.log(url);
       this.isFatching = true;
-      this.$emit("update:modelValue", '');
+      this.$emit("update:modelValue", "");
       this.records = undefined;
-      try{
-        const response = await axios.get(`${this.route(this.from, this.dependOn)}`)
+      try {
+        const response = await axios.get(
+          `${this.route(this.from, this.dependOn)}`
+        );
         this.raw_records = response.data;
         this.records = this.prepare(response.data);
         this.storage[url] = response.data;
-      }catch({ message }){
+      } catch ({ message }) {
         toast.add({
-          type:'error',
+          type: "error",
           message
         });
-      }finally{
+      } finally {
         this.isFatching = false;
       }
     },
 
     prepare(result) {
-      return result.map((item) => {
+      return result.map(item => {
         let obj = {
           label: item[this.label],
-          value: item[this.trackBy],
+          value: item[this.trackBy]
         };
         if (this.imgKey) obj.img = item[this.imgKey];
-        this.additional.forEach((field) => {
+        this.additional.forEach(field => {
           if (item[field]) obj[field] = item[field];
         });
         return obj;
@@ -223,10 +232,10 @@ export default {
     },
 
     sameObject(first, secend) {
-      if(!first || !secend) return false;
-      
-      for(let index in first) {
-        if(!first[index] || first[index] != secend[index]) return false; 
+      if (!first || !secend) return false;
+
+      for (let index in first) {
+        if (!first[index] || first[index] != secend[index]) return false;
       }
       return true;
     },
@@ -234,16 +243,16 @@ export default {
     handelSelect(value) {
       this.$emit("update:modelValue", value);
       this.$emit("change", value);
-      for(let index in this.raw_records){
-        if(this.raw_records[index][this.trackBy] == value){
-          if (this.getRow && typeof this.getRow === 'function') {
+      for (let index in this.raw_records) {
+        if (this.raw_records[index][this.trackBy] == value) {
+          if (this.getRow && typeof this.getRow === "function") {
             this.getRow(this.raw_records[index]);
           }
           return;
         }
       }
     },
-  },
+  }
 };
 </script>
 

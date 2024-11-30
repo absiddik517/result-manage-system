@@ -1,9 +1,11 @@
 <template>
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
-        <inertia-link :href="route('dashboard')" class="brand-link">
-            <img src="../../../../storage/app/public/images/AdminLTELogo.png"  alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-            <span class="brand-text font-weight-light">Admin Panel</span>
+        <inertia-link :href="route('admin.dashboard.index')" class="brand-link">
+            <img :src="$page.props.logo.asset"  alt="Logo" class="brand-image" style="opacity: .8">
+            <span class="brand-text font-weight-light">
+              {{ $page.props.institute.short_name ?? "RMS" }}-Dashboard
+            </span>
         </inertia-link>
 
         <!-- Sidebar -->
@@ -21,25 +23,10 @@
             <!-- Sidebar Menu -->
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                    <!-- Add icons to the links using the .nav-icon class
-                         with font-awesome or any other icon font library -->
-                    <li class="nav-item menu-open">
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <inertia-link :href="route('admin.dashboard.index')" class="nav-link">
-                                    <i class="nav-icon fas fa-tachometer-alt"></i>
-                                    <p>Dashboard</p>
-                                </inertia-link>
-                            </li>
-                        </ul>
-                    </li>
+                   
                     
                     <li class="nav-header">Academy</li>
-                    <SidebarLink 
-                          name="institute.index"
-                          text="Institute"
-                          icon="far fa-circle"
-                        />
+                    
                     <SidebarTree prefix="classes">
                       <template #title>
                         <i class="nav-icon fas fa-table"></i>
@@ -79,6 +66,11 @@
                         <SidebarLink 
                           name="student.index"
                           text="View"
+                          icon="far fa-circle"
+                        />
+                        <SidebarLink 
+                          name="student.promotion"
+                          text="Promotion"
                           icon="far fa-circle"
                         />
                         
@@ -187,7 +179,12 @@
                     />
                     
                     
-                    <li class="nav-header">ORDER</li>
+                    <li class="nav-header">Others</li>
+                    <SidebarLink 
+                      name="setting.index"
+                      text="Settings"
+                      icon="fa fa-gear"
+                    />
                     <SidebarTree 
                       prefix="gate"
                     >

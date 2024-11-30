@@ -24,8 +24,8 @@ class StoreRequest extends FormRequest
   public function rules()
   {
     return [
-      "name" => "required|min:4",
-      "short_name" => "required|min:4",
+      "name" => "required|min:4|unique:exams",
+      "short_name" => "required|min:4|unique:exams",
       "isCompleted" => "nullable",
     ];
   }

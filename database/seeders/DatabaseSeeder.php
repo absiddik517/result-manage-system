@@ -17,25 +17,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+      
+      
         DB::table('users')->insert([
-            'name' => 'Siddik',
+            'name' => 'A.B. Siddik',
             'email' => 'absiddik517@gmail.com',
             'password' => Hash::make('password'),
         ]);
         
-        DB::table('institutes')->insert([
-            'name' => 'সেন্ট ক্যাথারিনা প্রথমিক ও নিম্ন মাধ্যমিক বিদ্যালয়',
-            'established_at' => 'স্থাপিত: ১৯৮৫',
-            'address' => 'ঝলঝলিয়া, বাঘাইতল, হালুয়াঘাট, ময়মনসিংহ',
-            'pass_mark' => 33,
-            'logo' => null,
-        ]);
-        
         $this->call([
+            SettingSeeder::class,
             ClassSeeder::class,
             GroupSeeder::class,
             SubjectSeeder::class,
-            // Add other seeders here as needed
         ]);
         
         

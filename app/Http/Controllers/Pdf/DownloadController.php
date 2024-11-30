@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Pdf;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf as PDF;
 use App\Models\Exam;
 use App\Models\SubjectMapping;
@@ -65,12 +66,9 @@ class DownloadController extends Controller
       ];
     }
     private function get_result_entry_data($req){
-      $institute = Institute::orderBy('id', 'DESC')
-                  ->select('name', 'address', 'established_at')
-                  ->addSelect([
-                    'exam_name' => \DB::table('exams')->where('id', $req->exam_id)->selectRaw('name')
-                  ])
-                  ->first();
+      $institute = Cache::get('institute');
+      $exam = Exam::where('id', $req->exam_id)->first();
+      
       if(!$institute) abort(404, 'Institute not found');
       $mappings = SubjectMapping::where('exam_id', $req->exam_id)->get();
       if($mappings->count() === 0) abort(403, 'Subject mapping not found for this exam');
@@ -106,7 +104,8 @@ class DownloadController extends Controller
       
       return [
         'classes' => $data,
-        'institute' => $institute
+        'institute' => $institute,
+        'exam' => $exam
       ];
     }
     

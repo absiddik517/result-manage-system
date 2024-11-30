@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Pdf;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Cache;
 use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf as PDF;
 use App\Models\Exam;
 use App\Models\SubjectMapping;
@@ -29,7 +29,7 @@ class MarksheetController extends Controller
     }
     
     private function process_all_result($req){
-      $institute = Institute::orderBy('id', 'DESC')->select('name', 'address', 'established_at')->first();
+      $institute = Cache::get('institute');
       $exam = Exam::where('id', $req->exam_id)->select('name')->first();
       $students = Student::where('students.class_id', $req->class_id)
                 ->join('classes', 'classes.id', '=', 'students.class_id')
@@ -117,7 +117,7 @@ class MarksheetController extends Controller
     }
     
     private function process_result($req){
-      $institute = Institute::orderBy('id', 'DESC')->first();
+      $institute = Cache::get('institute');
       $exam = Exam::where('id', $req->exam_id)->select('name')->first();
       $student = Student::where('students.id', $req->student_id)
                 ->join('classes', 'classes.id', '=', 'students.class_id')

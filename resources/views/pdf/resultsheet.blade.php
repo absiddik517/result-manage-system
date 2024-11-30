@@ -92,15 +92,16 @@
         <!-- Header Section with Logo and School Information -->
         <table style="width: 100%">
           <tr>
-            <td style="width: 160px;"><img class="logo" src="{{ base_path('storage/images/logo.png') }}" alt="Logo"></td>
+            <td style="width: 160px;"><img class="logo" src="{{ Cache::get('logo')['real_path'] }}" alt="Logo"></td>
             <td style="text-align: center; vertical-align: top;">
               <div class="header">
                   <div class="school-info" >
                     <div style="font-size: 36px;"><b>{{ $institute['name'] }}</b></div>
-                    <p style="font-size: 18px;">{{ $institute['established_at'] }}</p>
-                    <p style="font-size: 18px;">{{ $institute['address'] }}</p>
-                    <p style="font-size:18px;"><b>{{ $institute['exam_name'] }}</b></p>
-                    <p style="font-size: 18px;"><b>{{ $institute['class_name'] }}</b></p>
+                    <p style="font-size: 18px;">{{ $institute['line_1'] }}</p>
+                    <p style="font-size: 18px;">{{ $institute['line_2'] }}</p>
+                    <p style="font-size: 18px;">{{ $institute['line_3'] }}</p>
+                    <p style="font-size:18px;"><b>{{ $exam['exam_name'] }}</b></p>
+                    <p style="font-size: 18px;"><b>{{ $exam['class_name'] }}</b></p>
                   </div>
               </div>
             </td>

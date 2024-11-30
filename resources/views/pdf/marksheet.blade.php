@@ -119,13 +119,13 @@
     <div class="result-sheet">
       <div class="header" style="text-align: center">
           <div style="float: left; width: 120px;">
-              <img class="logo" src="{{ base_path('storage/images/logo.png') }}" alt="">
+              <img class="logo" src="{{ Cache::get('logo')['real_path'] }}" alt="">
           </div>
 
           <div style="float: right; width: calc(100% - 240px);">
-            <h2>{{ $institute->name }}</h2>
-            <p>{{ $institute->established_at }}</p>
-            <p>{{ $institute->address }}</p>
+            <h2>{{ $institute['name'] }}</h2>
+            <p>{{ $institute['line_1'] }}</p>
+            <p>{{ $institute['line_2'] }}</p>
             <p>{{ $exam->name }}</p>
           </div>
 
