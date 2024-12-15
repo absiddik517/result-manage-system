@@ -139,7 +139,7 @@
                 <td style="width: 33.33%;">নাম: <strong>{{ $student['student']['name'] }}</strong></td>
                 <td style="width: 33.33%; text-align:center;">
                   শ্রেণি:
-                  <strong> {{ $student['student']['class'] }} @if($student['student']['group'])<span>( {{ $student['student']['group'] }} )</span>@endif</strong>
+                  <strong> {{ $class->name }} @if($student["student"]['group_name'])<span>( {{ $student['student']['group_name'] }} )</span>@endif</span>
                 </td>
                 <td style="width: 33.33%; text-align: right;">রোল নং: 
                 <strong>{{ bnum($student['student']['roll']) }}</strong></td>

@@ -32,6 +32,9 @@ class ClassesController extends Controller
     }
     
     public function create(){
+      $test = __('hello_world');
+      $test = __('classes.testing data type');
+      $test = __('test.hi data type');
       $groups = Group::select('name', 'id')->get();
       return inertia('Academic/Class/Create', compact('groups'));
     }
@@ -129,7 +132,7 @@ class ClassesController extends Controller
         $class->class_subjects()->delete();
         $class->delete();
         $toast = [
-          'message' => 'Class <strong>'.$class->name.'</strong> has <kbd>deleted</kbd> successfull!', 
+          'message' => __('Class has deleted successfull!'), 
           'type' => 'success'
         ];
       }catch(\Exception $e){

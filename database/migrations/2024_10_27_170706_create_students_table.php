@@ -117,6 +117,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('student_id');
             $table->unsignedBigInteger('class_id');
+            $table->unsignedBigInteger('group_id')->nullable();
             $table->unsignedBigInteger('exam_id');
             $table->unsignedBigInteger('subject_id');
             $table->integer('total_mark_obtain');
@@ -132,6 +133,9 @@ return new class extends Migration
             $table->foreign('class_id')
                 ->references('id')
                 ->on('classes');
+            $table->foreign('group_id')
+                ->references('id')
+                ->on('groups');
             $table->foreign('exam_id')
                 ->references('id')
                 ->on('exams');

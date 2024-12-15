@@ -39,7 +39,6 @@ cp env.example .env && touch database/database.sqlite && php artisan migrate --s
 ```
 
 ### If there is any error with media (i.e. photo) run the command bellow.
-Before running this command make sure you have deleted public/storage folder if it is exist. 
 
 ```
 php artisan cache:clear

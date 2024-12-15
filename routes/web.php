@@ -29,7 +29,6 @@ use App\Http\Controllers\Pdf\AdmitcardController;
 
 use Inertia\Inertia;
 
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -50,6 +49,8 @@ Route::get('/', function () {
     ]);
 });
 
+
+
 Route::prefix('settings')->name('setting.')->middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function(){
   Route::get('/', [SettingController::class, 'index'])->name('index');
   Route::post('/update-institute', [SettingController::class, 'update_institute'])->name('institute');
@@ -59,15 +60,6 @@ Route::prefix('settings')->name('setting.')->middleware(['auth:sanctum', config(
   Route::get('/test', [SettingController::class, 'getPdfFiles'])->name('hi');
 });
 
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
-});
 
 Route::get('downloads/marksheet', [MarksheetController::class, 'index'])->name('marksheet');
 Route::get('downloads/marksheets', [MarksheetController::class, 'print_all_marksheet'])->name('marksheets');
@@ -153,8 +145,9 @@ Route::prefix('student')->name('student.')->middleware(['auth:sanctum', config('
   
   Route::get('/get/students', [StudentController::class, 'get_students'])->name('get.select');
   
-  Route::get('/promostion', [StudentPromotionController::class, 'index'])->name('promotion');
+  Route::get('/promotion', [StudentPromotionController::class, 'index'])->name('promotion');
   Route::get('/get/{class_id}', [StudentPromotionController::class, 'getStudents'])->name('get');
+  Route::post('/promote', [StudentPromotionController::class, 'promote'])->name('promote');
 });
 
 Route::prefix('institute')->name('institute.')->middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function(){

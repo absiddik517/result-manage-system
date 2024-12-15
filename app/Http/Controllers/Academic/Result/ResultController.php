@@ -10,7 +10,6 @@ use App\Models\SubjectMapping;
 use App\Models\Classes;
 use App\Models\Student;
 use App\Models\Result;
-use App\Models\Institute;
 
 class ResultController extends Controller
 {
@@ -19,7 +18,7 @@ class ResultController extends Controller
       $exams = Exam::select('id as value', 'name as label')->get();
       $classes = Classes::select('id as value', 'name as label')->get();
       
-      return inertia('Academic/Sheet/ClassBy', compact('exams', 'classes', 'institute'));
+      return inertia('Academic/Sheet/Resultsheet', compact('exams', 'classes', 'institute'));
     }
     
     public function marksheet(){
@@ -34,16 +33,11 @@ class ResultController extends Controller
                 ->where('class_id', $request->class_id)
                 ->count();
       if(!$mappings) abort(404, 'No subject mapping found for this exam.');
-      $students = Student::where('students.class_id', $request->class_id)
-                  ->join('results', function($query) use($request){
-                    $query->on('students.id', '=', 'results.student_id')
-                          ->where('results.exam_id', $request->exam_id);
-                  })
-                  ->select('students.name as student_name', 'students.roll', 'students.id')
-                  ->selectRaw('sum(results.status) as pass_count')
-                  
-                  ->groupBy('students.name', 'students.roll', 'students.id')
-                  ->orderBy('students.roll', 'asc')
+      $students = Result::where('results.class_id', $request->class_id)
+                  ->where('exam_id', $request->exam_id)
+                  ->join('students', 'students.id', '=', 'results.student_id')
+                  ->select('student_id', 'roll', 'name')
+                  ->distinct()
                   ->get();
       if($students->count() == 0) abort(404, 'No student or result found in this class');
       return [

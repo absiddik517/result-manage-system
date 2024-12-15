@@ -2,7 +2,7 @@
   <Content>
     <div class="row">
       <div class="col-12">
-        <Card varient="dark" title="Exam Planning" :loading="loading">
+        <Card varient="dark" :title="`Planning ${isCreating ? ' (Create)' : ' (Update)'}`" :loading="loading">
           <div>
             <form @submit.prevent="submit">
               <div class="row">
@@ -113,7 +113,7 @@
               </div>
               
               <div class="form-group text-right">
-                <Button>
+                <Button :disabled="!form.isDirty">
                   <i class="fa" :class="{'fa-spinner fa-spin': form.processing, 'fa-save': !form.processing}"></i>
                   Save
                 </Button>
@@ -150,6 +150,7 @@ export default {
       pass_at: 33,
       form_data: undefined,
       has_previous: false,
+      isCreating: undefined,
     }
   },
   methods: {
@@ -192,6 +193,7 @@ export default {
           this.has_previous = true
           this.form_data = response.data;
         }
+        this.isCreating = response.data.isCreating;
         console.log(this.form.mappings)
       } catch (error) {
         toast.add({

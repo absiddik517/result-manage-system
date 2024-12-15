@@ -187,7 +187,8 @@ class SubjectMappingController extends Controller
       }
       return [
         'previous' => $exam_maps->where('exam_id', $req->exam_id)->count() === 0 ? $previous_exams : [],
-        'mappings' => $this->prepareMappings($class->subjects, $exam_maps->where('exam_id', $req->exam_id), $req)
+        'mappings' => $this->prepareMappings($class->subjects, $exam_maps->where('exam_id', $req->exam_id), $req),
+        "isCreating" => $exam_maps->count() === 0
       ];
     }
     
@@ -200,8 +201,15 @@ class SubjectMappingController extends Controller
           'class_id' => $req->class_id,
           'subject_id' => $sub->id,
           'name' => $sub->name,
-          'full_mark' => '',
-          'criteria' => []
+          'full_mark' => 100,
+          'criteria' => [
+            [
+              "title" => "লিখিত",
+              "short_title" => "CQ",
+              "full_mark" => 100,
+              "pass_mark" => 33
+            ]
+          ]
         ];
       }
       foreach ($exam_maps as $map){

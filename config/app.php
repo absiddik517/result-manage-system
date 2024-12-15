@@ -167,7 +167,7 @@ return [
         /*
          * Package Service Providers...
          */
-         
+        Siddik\LaravelTranslation\TranslationServiceProvider::class,
         /*
          * Application Service Providers...
          */

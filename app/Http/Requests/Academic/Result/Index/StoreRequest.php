@@ -27,6 +27,7 @@ class StoreRequest extends FormRequest
         'results.*.student_id' => 'required_if:results.*.appeared,true',
         'results.*.class_id' => 'required_if:results.*.appeared,true',
         'results.*.exam_id' => 'required_if:results.*.appeared,true',
+        'results.*.group_id' => 'nullable',
         'results.*.subject_id' => 'required_if:results.*.appeared,true',
         'results.*.total_mark_obtain' => 'required_if:results.*.appeared,true',
         'results.*.point' => 'required_if:results.*.appeared,true',

@@ -137,7 +137,7 @@
             <tr>
                 <td style="width: 33.33%;">নাম: <strong>{{ $student['name'] }}</strong></td>
                 <td style="width: 33.33%; text-align:center;">শ্রেণি: 
-                <strong> {{ $student['class'] }}@if($student['group']) <span> ( {{ $student['group'] }} )</span>@endif</strong></td>
+                <strong> {{ $class['name'] }}@if($student['group']) <span> ( {{ $student['group'] }} )</span>@endif</strong></td>
                 <td style="width: 33.33%; text-align: right;">রোল নং: <strong>{{ bnum($student['roll']) }}</strong></td>
             </tr>
         </table>

@@ -73,7 +73,7 @@ export default {
     },
     searchable: {
       type: Boolean,
-      default: true
+      default: false
     },
     object: Boolean,
     placeholder: {
@@ -198,7 +198,7 @@ export default {
       let url = this.route(this.from, this.dependOn);
       console.log(url);
       this.isFatching = true;
-      this.$emit("update:modelValue", "");
+      //this.$emit("update:modelValue", ""); // it is removing initial value
       this.records = undefined;
       try {
         const response = await axios.get(

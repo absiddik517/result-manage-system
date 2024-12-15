@@ -50,17 +50,19 @@
               <tbody v-else>
                 <tr v-for="student in data.students">
                   <td>{{ student.roll }}</td>
-                  <td>{{ student.student_name }}</td>
+                  <td>{{ student.name }}</td>
                   <td style="text-align: right;">
                     <a :href="route('marksheet', {class_id: filter.class_id,
-                    exam_id: filter.exam_id, student_id: student.id})"
+                    exam_id: filter.exam_id, student_id: student.student_id})"
                     target="_blank"><Pdfd :size="30"/></a>
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
-          
+          <div>
+            <pre>{{ data.students }}</pre>
+          </div>
         </Card>
       </div>
     </div>

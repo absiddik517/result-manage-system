@@ -137,7 +137,7 @@ class IndexController extends Controller
       //if(true !== false) abort(404, 'group id: '.$subject_mapings->group_id);
       if(!$subject_mapings) abort(404, 'Exam subject mark distribution not found');  
       
-      $students = Student::select('id', 'name', 'roll')
+      $students = Student::select('id', 'name', 'roll', 'group_id')
                         ->where('class_id', $req->class_id)
                         ->where(function($query) use($subject_mapings){
                           if($subject_mapings->group_id){
@@ -173,6 +173,7 @@ class IndexController extends Controller
           "exam_id" => $req->exam_id,
           "appeared" => ($results?->count() != 0) ? boolval(($results->where('student_id', $student->id)->count())) : true,
           "class_id" => $req->class_id,
+          "group_id" => $subject_mapings->group_id,
           "roll" => $student->roll,
           "student_id" => $student->id,
           "student_name" => $student->name,

@@ -13,7 +13,7 @@
       <div>
         <form @submit.prevent="submit">
           <Select v-if="!exam_id" v-model="form.exam_id" label-text="Exam" :options="exams" @change="getForm"/>
-          <Select v-if="!class_id" v-model="form.class_id" label-text="Class" :options="classes" @change="getForm"/>
+          <Select v-if="!class_id" :searchable="false" v-model="form.class_id" label-text="Class" :options="classes" @change="getForm"/>
           <Select 
             v-model="form.subject_id" 
             label-text="Subject" 
@@ -27,13 +27,14 @@
                   <input tabindex="-1" v-model="item.appeared" class="form-check-input" type="checkbox" :id="`flexSwitchCheckDefault_${index}_id`">
                   <label class="form-check-label" :for="`flexSwitchCheckDefault_${index}_id`" :class="{'failed' : form.results[index].grade
                     === 'F', 'passed': form.results[index].grade !== 'F'}">
-                    {{ item.roll }}. {{ item.student_name }}
+                    {{ item.roll }}. {{ item.student_name }} 
                     <i v-if="item.id" class="fa fa-pencil"></i>
                   </label>
                 </div>
                 <div class="row">
                   <div class="col-md-6 col-xs-6 col-sm-6" v-for="(row, ind) in item.result" :key="'result'+ind">
                     <input 
+                      :tabindex="(index*100)+ind+1"
                       :disabled="!item.appeared"
                       class="form-control mb-2"
                       :class="{'has-errors': form?.errors[`results.${index}.result.${ind}.mark_obtain`]}"
@@ -60,11 +61,12 @@
           <div class="form-group text-right">
             <Button>
               <i class="fa" :class="{'fa-spinner fa-spin': form.processing, 'fa-save': !form.processing}"></i>
-              Save
+              Save 
             </Button>
           </div>
         </form>
       </div>
+      <pre>{{ form }}</pre>
     </Card>
   </Content>
 </template>
@@ -116,6 +118,7 @@ export default {
       }),
       loaded: false,
       loading: false,
+      tab: 1,
     }
   },
   methods: {
@@ -199,7 +202,7 @@ export default {
           return (isGrade) ? 'F' : 0;
       }
     }
-  }
+  },
   
 }
 </script>

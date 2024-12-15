@@ -1,10 +1,11 @@
 <template>
   <Content>
     <Card varient="gray" title="Student Promotion" :loading="loading">
+      <form @submit.prevent="submit">
       <div class="row">
         <div class="col-5">
-          <Select 
-            withoutLabel 
+          <Select
+            withoutLabel
             placeholder="To"
             :options="classes"
             trackBy="id"
@@ -13,12 +14,10 @@
             @change="handleChange"
           />
         </div>
-        <div class="col-2" style="text-align: center;">
-          FROM
-        </div>
+        <div class="col-2" style="text-align: center">FROM</div>
         <div class="col-5">
-          <Select 
-            withoutLabel 
+          <Select
+            withoutLabel
             placeholder="From"
             :options="classes"
             trackBy="id"
@@ -33,9 +32,18 @@
         <div class="col-md-6">
           <table class="table table-bordered">
             <tbody>
-              <tr :class="{ 'not_promoted' : !student.promoted }" v-for="(student, index) in form.students" :key="index">
+              <tr
+                :class="{ not_promoted: !student.promoted }"
+                v-for="(student, index) in form.students"
+                :key="index"
+              >
                 <td>
-                  <input type="checkbox" v-model="student.promoted" tabindex="-1" @change="handlePromotionChange(index)">
+                  <input
+                    type="checkbox"
+                    v-model="student.promoted"
+                    tabindex="-1"
+                    @change="handlePromotionChange(index)"
+                  />
                 </td>
                 <td>
                   <div>
@@ -45,162 +53,205 @@
                     Roll: <strong>{{ student.old_roll }}</strong>
                   </div>
                 </td>
-                <td style="width: 120px;">
-                  <input @change="validateRoll(index)" v-model="student.roll" :disabled="!student.promoted" type="text" placeholder="New Roll" class="form-control"/>
-                </td>
-                <td style="width: 120px;" v-if="has_group">
-                  <input type="text" placeholder="New Roll" class="form-control"/>
-                </td>
-                <td style="width: 120px;" v-if="has_group">
-                  <input type="text" placeholder="New Roll" class="form-control"/>
+                <td>
+                  <Input
+                    withoutLabel
+                    optional
+                    @change="validateRoll(index)"
+                    v-model="student.roll"
+                    label="New Roll"
+                    :form="form"
+                    :disableIf="!student.promoted"
+                    :field="'students.'+index+'.roll'"
+                    type="number"
+                  />
+                  
+                  <template v-if="has_group" :key="index">
+                    <Select
+                      :disableIf="!student.promoted"
+                      withoutLabel
+                      optional
+                      :searchable="false"
+                      v-model="student.group_id"
+                      field="group_id"
+                      label-text="Group"
+                      label="name"
+                      trackBy="id"
+                      :form="form"
+                      :options="groups"
+                      :error="form.errors['students.'+index+'.group_id']"
+                    />
+                    
+                    <Select
+                      withoutLabel
+                      :disableIf="!student.promoted"
+                      v-model="student.optional_subject_id"
+                      label-text="Third Subject"
+                      :form="form"
+                      optional
+                      from="subject.select"
+                      :dependOn="{ group_id: student.group_id }"
+                      :error="form.errors['students.'+index+'.optional_subject_id']"
+                    />
+                  </template>
                 </td>
               </tr>
             </tbody>
           </table>
+          <div class="form-group text-right">
+            <Button>
+              <i
+                class="fa"
+                :class="{
+                  'fa-spinner fa-spin': form.processing,
+                  'fa-save': !form.processing,
+                }"
+              ></i>
+              Save
+            </Button>
+          </div>
         </div>
-        <div>
-          <pre>{{ has_group }}</pre>
-          <pre>{{ form.students }}</pre>
+        
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <pre>{{ students }}</pre>
+          <pre>{{ form }}</pre>
         </div>
       </div>
+      </form>
     </Card>
   </Content>
 </template>
 
 <script>
-import {
-  AdminLayout,
-  Card,
-  Input,
-  Switch,
-  Select,
-  Button,
-  Content,
-} from "@/Components";
-import { useForm } from "@inertiajs/inertia-vue3";
-import { reactive, ref } from "vue";
-import toast from '@/Store/toast';
-
-export default {
-  name: "Classes",
-  layout: AdminLayout,
-  components: {
-    Input,
-    Select,
-    Content,
-    Switch,
+  import {
+    AdminLayout,
     Card,
+    Input,
+    Switch,
+    Select,
     Button,
-  },
-  props: {
-    classes: Object,
-  },
-  data() {
-    return {
-      form: useForm({
-        from_class_id: '',
-        to_class_id: '',
-        students: []
-      }),
-      loading: false,
-      students: undefined,
-      has_group: false,
-    };
-  },
-  methods: {
-    async getStudents(){
-      if(!this.form.from_class_id) return;
-      this.loading = true;
-      try{
-        await axios
-          .get(route('student.get', this.form.from_class_id))
-          .then((response) => {
-            this.students = response.data;
-            this.prepareForm(response.data)
-          })
+    Content
+  } from "@/Components";
+  import { useForm } from "@inertiajs/inertia-vue3";
+  import { reactive, ref } from "vue";
+  import toast from "@/Store/toast";
+
+  export default {
+    name: "Classes",
+    layout: AdminLayout,
+    components: {
+      Input,
+      Select,
+      Content,
+      Switch,
+      Card,
+      Button
+    },
+    props: {
+      classes: Object,
+      groups: Object
+    },
+    data() {
+      return {
+        form: useForm({
+          from_class_id: "",
+          to_class_id: "",
+          has_group: false,
+          students: []
+        }),
+        loading: false,
+        students: undefined,
+        has_group: false,
+        temp: undefined
+      };
+    },
+    methods: {
+      async getStudents() {
+        if (!this.form.from_class_id) return;
+        this.loading = true;
+        try {
+          await axios
+            .get(route("student.get", this.form.from_class_id))
+            .then(response => {
+              this.students = response.data;
+              this.prepareForm(response.data);
+            });
           this.loading = false;
-      }catch(error){
-        toast.add({
-          type: 'error',
-          message: error.response.data.message
-        })
-        this.loading = false;
-        console.log(error);
+        } catch (error) {
+          toast.add({
+            type: "error",
+            message: error.response.data.message
+          });
+          this.loading = false;
+          console.log(error);
+        }
+      },
+      prepareForm(data) {
+        let students = [];
+        for (let i = 0; i < data.length; i++) {
+          students.push({
+            ...data[i],
+            promoted: true,
+            class_id: this.form.from_class_id,
+            to_class_id: this.form.to_class_id,
+            roll: "",
+          });
+        }
+        this.form.students = students;
+        this.form.students = students;
+      },
+      handleChange() {
+        let index = this.classes.findIndex(
+          classs => classs.id === this.form.to_class_id
+        );
+        let from_class = this.classes[index - 1];
+        this.form.from_class_id = from_class.id;
+        this.has_group = this.classes[index].has_group;
+        this.form.has_group = this.classes[index].has_group;
+      },
+      handlePromotionChange(index) {
+        this.form.students[index].roll = "";
+      },
+      validateRoll(indexToSkip) {
+        const rollArray = this.form.students
+          .map(student => student.roll) // Extract rolls
+          .filter(
+            (roll, index) => index !== indexToSkip && roll && !isNaN(roll)
+          );
+        const current = this.form.students[indexToSkip].roll;
+        if (rollArray.includes(current)) {
+          toast.add({
+            type: "error",
+            message: "Roll already exist."
+          });
+          this.form.students[indexToSkip].roll = "";
+        }
+      },
+
+      submit() {
+        this.form.clearErrors();
+        try {
+          this.form.post(route("student.promote"), {
+            preserveScroll: true,
+            onSuccess: () => {
+              this.form.reset();
+            },
+            onError: error => {
+              console.log(error);
+            }
+          });
+        } catch (error) {
+          console.log(error);
+        }
       }
-    },
-    prepareForm(data){
-      let students = [];
-      for(let i = 0; i < data.length; i++){
-        students.push({
-          id: data[i].id,
-          promoted: true,
-          class_id: this.form.from_class_id,
-          to_class_id: this.form.to_class_id,
-          old_roll: data[i].roll,
-          roll: '',
-          name: data[i].name,
-          group_id: data[i].group_id,
-          optional_subject_id: data[i].optional_subject_id,
-        })
-      }
-      this.form.students = students
-    },
-    handleChange(){
-      let index = this.classes.findIndex(classs => classs.id === this.form.to_class_id);
-      let from_class = this.classes[index - 1];
-      this.form.from_class_id = from_class.id;
-      this.has_group = this.classes[index].has_group
-    },
-    handlePromotionChange(index){
-      this.form.students[index].roll = ''
-    },
-    validateRoll(index){
-      console.log('ok')
     }
-    /*
-    submit() {
-      this.form.clearErrors();
-      try{
-        this.form.post(route('classes.store'), {
-          preserveScroll: true,
-          onSuccess: () => {
-            this.form.reset();
-          },
-          onError: error => {
-            console.log(error)
-          }
-        });
-      }catch(error){
-        console.log(error)
-      }
-    },
-    */
-  },
-};
+  };
 </script>
 
 <style scoped>
-  .items_container {
-    --item: #e6e6e6;
-    border: 1px solid var(--item);
-    border-radius: 4px;
-    margin-bottom: 5px;
-  }
-  .item_header {
-    padding: 8px 10px;
-    background: var(--item);
-  }
-  .item_header span {
-    color: #000;
-    font-weight: bold;
-    font-size: 1.35rem;
-  }
-  .item {
-    padding: 8px;
-    overflow: visible;
-  }
-  
-  table tbody tr td{
-    vertical-align: middle;
+  .not_promoted{
+    background: #f8d7da;
   }
 </style>
